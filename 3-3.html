@@ -1,0 +1,555 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>語法分析器（Parser）﹣語法分析（Syntactic analysis）（下） · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="4.html" />
+    
+    
+    <link rel="prev" href="3-2.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    前言
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="1.html">
+            
+                <a href="1.html">
+            
+                    
+                    簡介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="2-1.html">
+            
+                <a href="2-1.html">
+            
+                    
+                    掃瞄器（Scanner）﹣詞法分析（Lexical analysis）（上）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="2-2.html">
+            
+                <a href="2-2.html">
+            
+                    
+                    掃瞄器（Scanner）﹣詞法分析（Lexical analysis）（下）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="3-1.html">
+            
+                <a href="3-1.html">
+            
+                    
+                    語法分析器（Parser）﹣語法分析（Syntactic analysis）（上）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="3-2.html">
+            
+                <a href="3-2.html">
+            
+                    
+                    語法分析器（Parser）﹣語法分析（Syntactic analysis）（中）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.7" data-path="3-3.html">
+            
+                <a href="3-3.html">
+            
+                    
+                    語法分析器（Parser）﹣語法分析（Syntactic analysis）（下）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="4.html">
+            
+                <a href="4.html">
+            
+                    
+                    語意分析（Semantic analysis）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="5.html">
+            
+                <a href="5.html">
+            
+                    
+                    虛擬機（Virtual Machine）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="6-1.html">
+            
+                <a href="6-1.html">
+            
+                    
+                    編譯器（Compiler）﹣生成代碼（Code Generation）（上）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="6-2.html">
+            
+                <a href="6-2.html">
+            
+                    
+                    編譯器（Compiler）﹣生成代碼（Code Generation）（下）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" data-path="7.html">
+            
+                <a href="7.html">
+            
+                    
+                    優化器（Optimizer）﹣還可以更好
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >語法分析器（Parser）﹣語法分析（Syntactic analysis）（下）</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x4E09;&#x3001;&#x8A9E;&#x6CD5;&#x5206;&#x6790;&#x5668;&#xFF08;parser&#xFF09;&#xFE63;&#x8A9E;&#x6CD5;&#x5206;&#x6790;&#xFF08;syntactic-analysis&#xFF09;&#xFF08;&#x4E0B;&#xFF09;">&#x4E09;&#x3001;&#x8A9E;&#x6CD5;&#x5206;&#x6790;&#x5668;&#xFF08;Parser&#xFF09;&#xFE63;&#x8A9E;&#x6CD5;&#x5206;&#x6790;&#xFF08;Syntactic analysis&#xFF09;&#xFF08;&#x4E0B;&#xFF09;</h1>
+<p>&#x5728;&#x4E0A;&#x4E00;&#x7BC0;&#x4E2D;&#xFF0C;&#x6211;&#x5011;&#x8655;&#x7406;&#x4E86; <code>&#x201C;var&#x201D;</code> <code>&#x201C;if&#x201D;</code> <code>&#x201C;while&#x201D;</code> &#xFF0C;&#x5927;&#x5BB6;&#x61C9;&#x8A72;&#x5B78;&#x6703;&#x4E86;&#x5982;&#x4F55;&#x8655;&#x7406; expression block &#x4E86;&#xFF0C;&#x9019;&#x4E00;&#x7BC0;&#x6211;&#x5011;&#x5C07;&#x6703;&#x5B78;&#x7FD2;&#x5982;&#x4F55;&#x8655;&#x7406;&#x904B;&#x7B97;&#x7B26;&#x3002;&#x8655;&#x7406;&#x904B;&#x7B97;&#x7B26;&#x6709;&#x5169;&#x500B;&#x57FA;&#x672C;&#x6982;&#x5FF5;&#x8981;&#x638C;&#x63E1;&#xFF0C;&#x7B2C;&#x4E00;&#x662F;&#x904B;&#x7B97;&#x7B26;&#x7684;&#x904B;&#x7B97;&#x6B21;&#x5E8F;&#xFF0C;&#x7B2C;&#x4E8C;&#x662F;&#x904B;&#x7B97;&#x8868;&#x9054;&#x5F0F;&#x7684;&#x8868;&#x793A;&#x6CD5;&#x3002;</p>
+<h2 id="&#x904B;&#x7B97;&#x6B21;&#x5E8F;&#xFF08;order-or-operations&#xFF09;">&#x904B;&#x7B97;&#x6B21;&#x5E8F;&#xFF08;Order or operations&#xFF09;</h2>
+<p>&#x5728;&#x6578;&#x5B78;&#x7B97;&#x5F0F;&#x88E1;&#xFF0C;&#x6211;&#x5011;&#x6709;&#x500B;&#x6CD5;&#x5247;&#x53EB;&#x505A; &#x201C;&#x5148;&#x4E58;&#x9664;&#xFF0C;&#x5F8C;&#x52A0;&#x6E1B;&#x201D;&#xFF0C;&#x610F;&#x601D;&#x5C31;&#x662F;&#x4E58;&#x9664;&#x7684;&#x904B;&#x7B97;&#x6B21;&#x5E8F;&#x6BD4;&#x52A0;&#x6E1B;&#x9AD8;&#xFF0C;&#x540C;&#x6A23;&#x5730;&#x5728;&#x7A0B;&#x5F0F;&#x8A9E;&#x8A00;&#x4E2D;&#xFF0C;&#x6211;&#x5011;&#x4E5F;&#x9700;&#x8981;&#x5B9A;&#x7FA9;&#x4E00;&#x4E0B;&#x904B;&#x7B97;&#x7B26;&#x7684;&#x904B;&#x7B97;&#x6B21;&#x5E8F;&#x3002;&#x5728; Wescript &#x4E2D;&#xFF0C;&#x6211;&#x5011;&#x6703;&#x7528;&#x5E38;&#x7528;&#x7684;&#x904B;&#x7B97;&#x7B26;&#x6B21;&#x5E8F;&#xFF0C;&#x5373;&#x5982;&#x4E0B;&#x5716;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="images/3-3-1.png" alt=""></p>
+<p>&#x53D6;&#x81EA;&#x7DAD;&#x57FA;</p>
+<p>&#x897F;&#x5091;&#x4E0D;&#x6703;&#x8655;&#x7406;&#x9019;&#x88E1;&#x6240;&#x5217;&#x7684;&#x6240;&#x6709;&#x904B;&#x7B97;&#x7B26;&#xFF0C;&#x53EA;&#x6703;&#x8655;&#x7406;&#x7B2C;&#x4E00;&#x7AE0;&#x6240;&#x5217;&#x7684;&#x904B;&#x7B97;&#x7B26;&#xFF0C;&#x5176;&#x4ED6;&#x5C31;&#x7559;&#x7D66;&#x8B80;&#x8005;&#x5011;&#x7576;&#x7DF4;&#x7FD2;&#x5427;&#x3002;</p>
+<h2 id="&#x8868;&#x793A;&#x6CD5;">&#x8868;&#x793A;&#x6CD5;</h2>
+<p>&#x897F;&#x5091;&#x76F8;&#x4FE1;&#x5927;&#x90E8;&#x4EFD;&#x4EBA;&#x90FD;&#x6703;&#x4F7F;&#x7528; infix notation&#xFF08;&#x53EF;&#x80FD;&#x7528;&#x5B8C;&#x4E5F;&#x4E0D;&#x77E5;&#x9053;&#x5B83;&#x7684;&#x540D;&#x7A31;&#x539F;&#x4F86;&#x5C31;&#x662F; infix notation &#xFF09;&#xFF0C;&#x4F46;&#x5176;&#x5BE6;&#x9019;&#x4E16;&#x754C;&#x4E0A;&#x9084;&#x6709;&#x5169;&#x7A2E;&#x904B;&#x7B97;&#x5F0F;&#x8868;&#x793A;&#x6CD5;&#xFF0C; prefix notation &#x548C; postfix notation &#xFF0C;&#x770B;&#x770B;&#x4F8B;&#x5B50;&#x5927;&#x5BB6;&#x5C31;&#x6703;&#x660E;&#x767D;&#x9019;&#x662F;&#x4EC0;&#x9EBC;&#x6982;&#x5FF5;&#x3002;</p>
+<pre><code>Infix notation: 1 + 2 * 3
+
+Prefix notation: + 1 * 2 3
+
+Postfix notation: 1 2 3 * +
+</code></pre><p>&#x6211;&#x5011;&#x65E5;&#x5E38;&#x5BEB;&#x7A0B;&#x5F0F;&#x6642;&#x4F7F;&#x7528;&#x7684;&#x90FD;&#x662F; infix notation&#xFF0C;&#x4F46;&#x662F;&#x5C0D;&#x96FB;&#x8166;&#x4F86;&#x8AAA;&#xFF0C;postfix notation &#x6BD4;&#x8F03;&#x5BB9;&#x6613;&#x8655;&#x7406;&#xFF08;&#x901A;&#x5E38;&#x6703;&#x7528;&#x4E00;&#x500B; stack &#x4F86;&#x8655;&#x7406;&#xFF09;&#xFF0C;&#x56E0;&#x6B64;&#x6211;&#x5011;&#x7684; Parser &#x5C07;&#x6703;&#x8B80;&#x9032; Infix notation&#xFF0C;&#x5230; compile &#x6642;&#x5C31;&#x6703;&#x8F49;&#x70BA; postfix notation&#x3002;</p>
+<h2 id="&#x5206;&#x9805;&#xFF08;&#x6216;&#x7A31;&#x904B;&#x7B97;&#x5143;-operand-&#xFF09;">&#x5206;&#x9805;&#xFF08;&#x6216;&#x7A31;&#x904B;&#x7B97;&#x5143; operand &#xFF09;</h2>
+<p>&#x958B;&#x59CB;&#x5BEB;&#x7A0B;&#x5F0F;&#x4E86;&#xFF0C;&#x7B2C;&#x4E00;&#x4EF6;&#x4E8B;&#x60C5;&#x662F;&#x8981;&#x5206;&#x9805;&#xFF0C;&#x4EC0;&#x9EBC;&#x662F;&#x5206;&#x9805;&#x5462;&#xFF1F;&#x5C31;&#x662F;&#x628A;&#x4E00;&#x53E5; expression &#x65AC;&#x6210;&#x591A;&#x500B;&#x9805;&#x76EE;&#xFF0C;&#x600E;&#x6A23;&#x624D;&#x7B97;&#x662F;&#x4E00;&#x500B;&#x9805;&#x76EE;&#x5462;&#xFF1F;&#x770B;&#x770B;&#x4E0B;&#x5716;&#xFF1A;</p>
+<p><img src="images/3-3-2.png" alt=""></p>
+<p>&#x9805;&#x76EE;&#x5305;&#x62EC;&#x4EE5;&#x4E0A;&#x6240;&#x5217;&#x7684;&#x5E7E;&#x7A2E;&#xFF1A;&#x6578;&#x503C;&#xFF08;&#x6578;&#x5B57;&#x548C;&#x5E03;&#x6797;&#x503C;&#xFF09;&#xFF0C;&#x8CA0;&#x6578;&#x503C;&#xFF0C;&#x5305;&#x8457;&#x4E00;&#x5806;&#x5B50;&#x9805;&#x76EE;&#x7684;&#x62EC;&#x865F;&#xFF0C;&#x8B8A;&#x6578;&#x3002;&#x6839;&#x64DA;&#x9019;&#x500B;&#x5206;&#x985E;&#x6CD5;&#xFF0C;&#x6211;&#x5011;&#x53EF;&#x4EE5;&#x6539;&#x5BEB;&#x51FA; parse &#x9805;&#x76EE;&#x7684; function &#x3002;</p>
+<pre><code class="lang-js">Parser.prototype.parseOperand = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">var</span> token = <span class="hljs-keyword">this</span>.nextToken();
+    <span class="hljs-keyword">var</span> operandNode;
+    <span class="hljs-keyword">switch</span> (token) {
+        <span class="hljs-keyword">case</span> Token.tokens.INTLITERAL_TOKEN:
+            operandNode = <span class="hljs-keyword">new</span> IntNode(<span class="hljs-keyword">this</span>.currentToken.text);
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> Token.tokens.BOOLLITERAL_TOKEN:
+            operandNode = <span class="hljs-keyword">new</span> BoolNode(<span class="hljs-keyword">this</span>.currentToken.text);
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> Token.tokens.IDENTIFIER_TOKEN:
+            operandNode = <span class="hljs-keyword">new</span> IdentifierNode(<span class="hljs-keyword">this</span>.currentToken.text);
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> Token.tokens.LEFTPAREN_TOKEN:
+            operandNode = <span class="hljs-keyword">new</span> ParenNode(<span class="hljs-keyword">this</span>.parseCompoundExpression(<span class="hljs-number">0</span>));
+            <span class="hljs-comment">//consume the right paren )</span>
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.lookahead() == Token.tokens.RIGHTPAREN_TOKEN) {
+                <span class="hljs-keyword">this</span>.nextToken();
+            } <span class="hljs-keyword">else</span> {
+                Errors.push({
+                    type: Errors.SYNTAX_ERROR,
+                    msg: <span class="hljs-string">&quot;Missing right paren \&quot;)\&quot;&quot;</span>,
+                    line: <span class="hljs-keyword">this</span>.scanner.currLine
+                });
+            }
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> Token.tokens.MINUS_TOKEN:
+            operandNode = <span class="hljs-keyword">new</span> NegateNode(<span class="hljs-keyword">this</span>.parseOperand());
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">default</span>:
+            <span class="hljs-comment">//not valid</span>
+            Errors.push({
+                type: Errors.SYNTAX_ERROR,
+                msg: <span class="hljs-string">&quot;Unexpected token&quot;</span>,
+                line: <span class="hljs-keyword">this</span>.scanner.currLine
+            });
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+    }
+    <span class="hljs-keyword">return</span> operandNode;
+}
+</code></pre>
+<p>&#x982D;&#x4E09;&#x6B3E;&#x5206;&#x5225;&#x70BA;&#x6578;&#x5B57;&#xFF0C;&#x5E03;&#x6797;&#x503C;&#x548C; identifier &#xFF08;&#x5373;&#x8B8A;&#x6578;&#xFF09;&#xFF0C;&#x53EA;&#x662F;&#x5F88;&#x7C21;&#x55AE;&#x7684;&#x8B80;&#x9032;&#x4E00;&#x500B; token &#x518D;&#x5EFA;&#x7ACB;&#x4E00;&#x500B; node &#x3002;&#x9047;&#x5230;&#x5DE6;&#x62EC;&#x865F;&#x6642;&#x5C31;&#x6709;&#x9EDE;&#x7279;&#x5225;&#x4E86;&#xFF0C;&#x9019;&#x6642;&#x6211;&#x5011;&#x8981; <code>parseCompoundExpression</code> &#xFF0C;&#x610F;&#x601D;&#x5C31;&#x662F;&#x8981;&#x8655;&#x7406;&#x66F4;&#x8907;&#x96DC;&#x7684; expression &#xFF08;&#x4F8B;&#x5982;&#xFF1A; <code>1 + 2 * 3</code> &#xFF09;&#xFF0C;&#x6211;&#x5011;&#x5F85;&#x6703;&#x5152;&#x5C31;&#x6703;&#x5BEB;&#x9019;&#x500B; function &#x3002;&#x63A5;&#x8457;&#x7576;&#x6211;&#x5011;&#x9047;&#x5230; <code>&#x201C;-&#x201D;</code> &#x6642;&#xFF0C;&#x6211;&#x5011;&#x5C31;&#x8981;&#x518D;&#x8B80;&#x591A;&#x4E00;&#x500B;&#x9805;&#x76EE;&#xFF0C;&#x56E0;&#x70BA;&#x9019;&#x500B; <code>&#x201C;-&#x201D;</code> &#x4EE3;&#x8868;&#x8CA0;&#x6578;&#x503C;&#xFF0C;&#x6211;&#x5011;&#x8981;&#x5EFA;&#x7ACB;&#x4E00;&#x500B; <code>NegateNode</code> &#x3002;&#x6700;&#x5F8C;&#x5982;&#x679C;&#x90FD;&#x4E0D;&#x662F;&#x4EE5;&#x4E0A;&#x5E7E;&#x6B3E;&#x7684;&#x8A71;&#x5C31;&#x7B97;&#x662F; syntax error &#x4E86;&#x3002;</p>
+<p>&#x4E4B;&#x524D;&#x6211;&#x5011;&#x662F;&#x5728; <code>parseExpression</code> &#x4E2D;&#x8655;&#x7406;&#x6578;&#x503C;&#x7684;&#xFF0C;&#x73FE;&#x5728;&#x6211;&#x5011;&#x8981;&#x5F9E;&#x4E2D;&#x62BD;&#x8D77;&#xFF0C;&#x653E;&#x5230; <code>parseOperand</code> &#x7576;&#x4E2D;&#xFF01;</p>
+<p><code>parseCompoundExpression</code> &#x7684; algorithm &#x5982;&#x4E0B;&#xFF0C;&#x5148;&#x5927;&#x7D04;&#x770B;&#x4E00;&#x770B;&#xFF0C;&#x4E0B;&#x9762;&#x518D;&#x89E3;&#x91CB;&#x3002;</p>
+<pre><code class="lang-js">Parser.prototype.getBindingPower = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">token</span>) </span>{
+    <span class="hljs-keyword">switch</span> (token) {
+        <span class="hljs-keyword">case</span> Token.tokens.PLUS_TOKEN:
+        <span class="hljs-keyword">case</span> Token.tokens.MINUS_TOKEN:
+            <span class="hljs-keyword">return</span> <span class="hljs-number">120</span>;
+        <span class="hljs-keyword">case</span> Token.tokens.MULT_TOKEN:
+        <span class="hljs-keyword">case</span> Token.tokens.DIV_TOKEN:
+            <span class="hljs-keyword">return</span> <span class="hljs-number">130</span>;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+}
+Parser.prototype.createOperatorNode = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">operatorToken</span>) </span>{
+    <span class="hljs-keyword">switch</span> (operatorToken) {
+        <span class="hljs-keyword">case</span> Token.tokens.PLUS_TOKEN:
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> OperatorPlusNode();
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> Token.tokens.MINUS_TOKEN:
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> OperatorMinusNode();
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> Token.tokens.MULT_TOKEN:
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> OperatorMultNode();
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> Token.tokens.DIV_TOKEN:
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> OperatorDivNode();
+            <span class="hljs-keyword">break</span>;
+    }
+}
+Parser.prototype.parseCompoundExpression = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">rightBindingPower</span>) </span>{
+    <span class="hljs-keyword">var</span> operandNode = <span class="hljs-keyword">this</span>.parseOperand();
+    <span class="hljs-keyword">if</span> (operandNode == <span class="hljs-literal">null</span>) {
+        <span class="hljs-keyword">return</span> operandNode;
+    }
+    <span class="hljs-keyword">var</span> compoundExpressionNode = <span class="hljs-keyword">new</span> CompoundNode();
+    compoundExpressionNode.push(operandNode);
+    <span class="hljs-keyword">var</span> operator = <span class="hljs-keyword">this</span>.lookahead();
+    <span class="hljs-keyword">var</span> leftBindingPower = <span class="hljs-keyword">this</span>.getBindingPower(operator);
+    <span class="hljs-keyword">if</span> (leftBindingPower == <span class="hljs-number">-1</span>) {
+        <span class="hljs-comment">//not an operator</span>
+        <span class="hljs-keyword">return</span> compoundExpressionNode;
+    }
+    <span class="hljs-keyword">while</span> (rightBindingPower &lt; leftBindingPower) {
+        operator = <span class="hljs-keyword">this</span>.nextToken();
+        compoundExpressionNode.push(<span class="hljs-keyword">this</span>.createOperatorNode(operator));
+        <span class="hljs-keyword">var</span> node = <span class="hljs-keyword">this</span>.parseCompoundExpression(leftBindingPower);
+        compoundExpressionNode.push(node);
+        <span class="hljs-keyword">var</span> oper = <span class="hljs-keyword">this</span>.lookahead();
+        leftBindingPower = <span class="hljs-keyword">this</span>.getBindingPower(oper);
+        <span class="hljs-keyword">if</span> (leftBindingPower == <span class="hljs-number">-1</span>) {
+            <span class="hljs-comment">//not an operator</span>
+            <span class="hljs-keyword">return</span> compoundExpressionNode;
+        }
+    }
+    <span class="hljs-keyword">return</span> compoundExpressionNode;
+}
+</code></pre>
+<p>&#x9019;&#x500B; algorithm &#x662F;&#x53D6;&#x81EA; Vaughan Pratt &#x7684;&#xFF08;&#x597D;&#x4F3C;&#x4FC2;&#xFF09;&#xFF0C;&#x4F46;&#x6211;&#x662F;&#x5728; <a href="http://eli.thegreenplace.net/2010/01/02/top-down-operator-precedence-parsing/" target="_blank">Eli Bendersky</a> &#x90A3;&#x88E1;&#x5B78;&#x7684;&#x3002;&#x770B;&#x8D77;&#x4F86;&#x6709;&#x9EDE;&#x8907;&#x96DC;&#x4E86;&#x5427;&#xFF0C;&#x653E;&#x5FC3;&#xFF0C;&#x6211;&#x6162;&#x6162;&#x5730;&#x4F86; &#x3002;</p>
+<h2 id="binding-power">Binding Power</h2>
+<p>&#x7531;&#x65BC;&#x904B;&#x7B97;&#x7B26;&#x904B;&#x7B97;&#x6642;&#x6709;&#x5148;&#x5F8C;&#x6B21;&#x5E8F;&#x4E4B;&#x5206;&#xFF0C;&#x6211;&#x5011;&#x7684; compiler &#x4E5F;&#x9700;&#x8981;&#x8655;&#x7406;&#xFF0C;&#x800C; Wescript compiler &#x8655;&#x7406;&#x7684;&#x65B9;&#x6CD5;&#x5C31;&#x662F;&#x8CE6;&#x4E88;&#x6BCF;&#x4E00;&#x500B;&#x904B;&#x7B97;&#x7B26;&#x4E00;&#x500B; binding power &#xFF0C;Binding Power &#x9AD8;&#x7684;&#x904B;&#x7B97;&#x7B26;&#x53EF;&#x4EE5;&#x4F54;&#x6709;&#x5176;&#x76F8;&#x9130;&#x7684;&#x9805;&#x76EE;&#xFF0C;&#x5982; Eli &#x7684;&#x4F8B;&#x5B50;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="images/3-3-3.png" alt=""></p>
+<p>B &#x6BD4; A &#x5F37;&#xFF0C;&#x6240;&#x4EE5;&#x4F54;&#x6709; E &#xFF08;&#x5509;&#xFF0C;&#x9023;&#x96FB;&#x8166;&#x7684;&#x4E16;&#x754C;&#x88E1;&#x4E5F;&#x662F;&#x5F31;&#x8089;&#x5F37;&#x98DF;&#x2026;&#x2026;&#xFF09;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x6211;&#x5011;&#x9700;&#x8981;&#x5148;&#x8A2D;&#x5B9A;&#x904B;&#x7B97;&#x7B26;&#x7684; binding power &#xFF0C;&#x9019;&#x5C31;&#x662F; <code>getBindingPower</code> &#x7684;&#x5DE5;&#x4F5C;&#x4E86;&#x3002;&#x5230;&#x6232;&#x8089;&#x4E86;&#xFF0C;&#x9019;&#x88E1;&#x6211;&#x6703;&#x7528;&#x975C;&#x614B;&#x52D5;&#x756B;&#xFF08;&#x975C;&#x614B;&#x7684;&#x52D5;&#x756B;&#xFF09;&#x4F86;&#x63CF;&#x8FF0;&#x9019;&#x500B; algorithm &#x7684;&#x5DE5;&#x4F5C;&#x3002;</p>
+<p><img src="images/3-3-4.png" alt=""></p>
+<p>&#x958B;&#x59CB;&#x6642;&#x662F;&#x9019;&#x6A23;&#x7684;&#xFF0C;&#x6CE8;&#x610F;&#x62EC;&#x865F;&#x7684; binding power &#x662F; 0 &#xFF0C;&#x56E0;&#x70BA;&#x6211;&#x628A;&#x5B83;&#x7576;&#x6210;&#x9805;&#x76EE;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x666E;&#x901A;&#x7684;&#x904B;&#x7B97;&#x7B26;&#x3002;</p>
+<p><img src="images/3-3-5.png" alt=""></p>
+<p>&#x73FE;&#x5728;&#x958B;&#x59CB;&#x57F7;&#x884C;&#xFF0C;&#x4E00;&#x958B;&#x59CB;&#x7684; <code>rightBindingPower</code> &#x662F; 0 &#xFF0C;&#x8B80;&#x53D6;&#x4E86;&#x4E00;&#x500B;&#x9805;&#x76EE;&#xFF08;&#x4EE5;&#x5713;&#x5F62;&#x8868;&#x793A;&#xFF09;&#xFF0C;&#x7531;&#x65BC; <code>&#x201C;+&#x201D;</code> &#x7684; binding power &#x8F03;&#x5F37;&#xFF0C;&#x6240;&#x4EE5;&#x9019;&#x53E5;&#x5224;&#x65B7;&#x6210;&#x7ACB;&#xFF1A;</p>
+<pre><code class="lang-js"><span class="hljs-keyword">while</span> (rightBindingPower &lt; leftBindingPower) { <span class="hljs-comment">//0 &lt; 120</span>
+</code></pre>
+<p>&#x6CE8;&#x610F;&#x4E0D;&#x8981;&#x641E;&#x932F;&#x5DE6;&#x548C;&#x53F3;&#xFF0C;&#x9019;&#x88E1;&#x7684;&#x5DE6;&#x662F;&#x6307;&#x904B;&#x7B97;&#x7B26;&#x7684;&#x5DE6;&#x9762;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x9805;&#x76EE;&#x7684;&#x5DE6;&#x9762;
+&#x63A5;&#x4E0B;&#x4F86;&#x5C31;&#x662F;&#x8981; recursive &#x5730;&#x518D;&#x904B;&#x884C; <code>parseCompoundExpression</code> &#x3002;</p>
+<p><img src="images/3-3-6.png" alt=""></p>
+<p>&#x540C;&#x6A23;&#x5730;&#xFF0C;&#x8B80;&#x53D6;&#x4E00;&#x500B;&#x9805;&#x76EE;&#xFF0C;&#x6AA2;&#x67E5;&#x4E00;&#x4E0B;&#x53F3;&#x9762;&#x7684;&#x904B;&#x7B97;&#x7B26;&#x7684; <code>leftBindingPower</code> &#xFF0C;&#x767C;&#x73FE; <code>rightBindingPower (120)</code>  &#x6BD4; <code>leftBindingPower (130)</code>  &#x5C0F;&#xFF0C;&#x65BC;&#x662F;&#x5C31;&#x518D;&#x904B;&#x884C;&#x4E00;&#x500B;&#x65B0;&#x7684; recursion &#x3002;</p>
+<p><img src="images/3-3-7.png" alt=""></p>
+<p>&#x63A5;&#x4E0B;&#x4F86;&#x7684; 3 &#x2013; 4 &#x7684;&#x8655;&#x7406;&#x65B9;&#x6CD5;&#x8DDF;&#x4E0A;&#x9762;&#x76F8;&#x4F3C;&#xFF0C;&#x4F46;&#x6709;&#x4E9B;&#x5206;&#x5225;&#xFF0C;&#x62EC;&#x865F;&#x662F;&#x7576;&#x6210;&#x4E00;&#x500B;&#x9805;&#x76EE;&#x4F86;&#x8655;&#x7406;&#xFF0C;&#x6240;&#x4EE5; binding power &#x7531; 0 &#x958B;&#x59CB;&#xFF0C;&#x7576;&#x8B80;&#x5230; 4 &#x7684;&#x6642;&#x5019;&#xFF0C;&#x518D;&#x8B80;&#x4E00;&#x500B;&#x904B;&#x7B97;&#x7B26;&#x6642;&#xFF0C;&#x6211;&#x5011;&#x6703;&#x8B80;&#x5230; &#x201C;)&#x201D; &#x53F3;&#x62EC;&#x865F;&#xFF0C;&#x7576;&#x6211;&#x5011;&#x5617;&#x8A66;&#x62FF;&#x53D6;&#x5B83;&#x7684; binding power &#x6642;&#x5C31;&#x6703;&#x62FF;&#x5230; -1&#xFF0C;&#x65BC;&#x662F;&#x662F;&#x6B21; recursion &#x76F4;&#x63A5;&#x7D42;&#x6B62;&#x3002;</p>
+<p><img src="images/3-3-8.png" alt=""></p>
+<p>&#x7136;&#x5F8C;&#x62EC;&#x865F;&#x4E5F;&#x8655;&#x7406;&#x597D;&#x4E86;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5; return &#x4E86;&#x3002;</p>
+<p><img src="images/3-3-9.png" alt=""></p>
+<p>&#x7531;&#x65BC;&#x4E0B;&#x4E00;&#x500B;&#x904B;&#x7B97;&#x7B26; <code>&#x201C;+&#x201D;</code> &#x7684; binding power <code>(120)</code> &#x6BD4;&#x73FE;&#x5728;&#x7684; <code>&#xFF08;130&#xFF09;</code> &#x5C0F;&#xFF0C;&#x6240;&#x4EE5;&#x4E5F;&#x53EF;&#x4EE5; return &#x4E86;&#x3002;</p>
+<p>&#x53EF;&#x4E0D;&#x53EF;&#x4EE5;&#x7528; <code>rightBindingPower &lt;= leftBindingPower</code> &#x800C;&#x4E0D;&#x662F; <code>rightBindingPower &lt; leftBindingPower</code> &#x5462;&#xFF1F;
+&#x4E0D;&#x53EF;&#x4EE5;&#xFF0C;&#x60F3;&#x60F3;&#x9019;&#x500B;&#x4F8B;&#x5B50;&#xFF0C; <code>1 &#x2013; 2 + 3</code> &#xFF0C;&#x7531;&#x65BC; <code>&#x201C;-&#x201D;</code> &#x548C; <code>&#x201C;+&#x201D;</code> &#x7684; binding power &#x4E00;&#x6A23;&#xFF0C;&#x5982;&#x679C;&#x7528;&#x5C0F;&#x65BC;&#x6216;&#x7B49;&#x65BC;&#x7684;&#x8A71;&#xFF0C; parse tree &#x5C07;&#x6703;&#x7576;&#x6210; <code>1 &#x2013; (2 + 3)</code></p>
+<p><img src="images/3-3-10.png" alt=""></p>
+<p>&#x73FE;&#x5728;&#x9023; <code>2 * (3 &#x2013; 4)</code> &#x4E5F;&#x53EF;&#x4EE5; return &#x4E86;&#xFF0C;&#x56E0;&#x70BA; <code>1 + 2</code> &#x7684; <code>&#x201C;+&#x201D;</code> &#x7684; binding power &#x4E26;&#x4E0D;&#x6BD4; <code>+ 5</code> &#x7684; <code>&#x201C;+&#x201D;</code> &#x5C0F;&#x3002;&#x8FD4;&#x56DE;&#x4E4B;&#x5F8C;&#xFF0C; binding power &#x70BA; 0 &#x7684;&#x90A3;&#x500B; function &#x5C07;&#x6703;&#x7E7C;&#x7E8C;&#x8B80;&#x53D6;&#x904B;&#x7B97;&#x5F0F;&#x76F4;&#x81F3;&#x8B80;&#x53D6;&#x6240;&#x6709;&#x904B;&#x7B97;&#x5F0F;&#x70BA;&#x6B62;&#x3002;</p>
+<p><img src="images/3-3-11.png" alt=""></p>
+<p>&#x5C31;&#x662F;&#x9019;&#x6A23;&#x4E86;&#xFF0C;&#x5F88;&#x7C21;&#x55AE;&#x5427;&#xFF1F;&#x4E0D;&#x660E;&#x767D;&#x7684;&#x591A;&#x770B;&#x5E7E;&#x6B21;&#x4EE5;&#x4E0A;&#x7684;&#x4F8B;&#x5B50;&#x5427;&#xFF0C;&#x518D;&#x4E0D;&#x660E;&#x767D;&#x7684;&#x8A71;&#x5C31;&#x7559;&#x500B;&#x8A00;&#xFF0C;&#x897F;&#x5091;&#x5F88;&#x5FEB;&#x6703;&#x8DDF;&#x9032;&#x7684;&#x4E86;&#x3002;&#x73FE;&#x5728;&#x770B;&#x770B;&#x9019;&#x6BB5;&#x7A0B;&#x5F0F;&#x662F;&#x4E0D;&#x662F;&#x904B;&#x4F5C;&#x6B63;&#x5E38;&#x3002;</p>
+<p>&#x770B;&#x770B; <code>console.log</code> &#xFF0C;&#x7A0B;&#x5F0F;&#x904B;&#x4F5C;&#x6B63;&#x5E38;&#x3002;&#x73FE;&#x5728;&#x628A;&#x9918;&#x4E0B;&#x7684;&#x904B;&#x7B97;&#x7B26;&#x90FD;&#x7DE8;&#x5BEB;&#x4E0B;&#x4F86;&#xFF01;</p>
+<p>&#x9019;&#x6BB5;&#x7A0B;&#x5F0F;&#x4E3B;&#x8981;&#x7DE8;&#x5BEB;&#x4E86;&#x908F;&#x8F2F;&#x904B;&#x7B97;&#x7B26;&#xFF0C;&#x770B;&#x770B; <code>console.log</code> &#xFF0C;&#x9084;&#x662F;&#x904B;&#x4F5C;&#x6B63;&#x5E38;&#x3002;&#x90A3;&#x6211;&#x5011;&#x73FE;&#x5728;&#x5BEB;&#x9918;&#x4E0B;&#x7684; assignment &#x904B;&#x7B97;&#x7B26;&#x5427;&#x3002;</p>
+<p><code>&#x201C;=&#x201D;</code> <code>&#x201C;+=&#x201D;</code> <code>&#x201C;-=&#x201D;</code> &#x5176;&#x5BE6;&#x6C92;&#x6709;&#x4EC0;&#x9EBC;&#x7279;&#x5225;&#x8655;&#x7406;&#x65B9;&#x6CD5;&#xFF0C;&#x8DDF;&#x4E4B;&#x524D;&#x7684;&#x904B;&#x7B97;&#x7B26;&#x5DEE;&#x4E0D;&#x591A;&#xFF0C;&#x9019;&#x88E1;&#x5C31;&#x4E0D;&#x8A73;&#x8FF0;&#x4E86;&#x3002;&#x4F46;&#x662F; <code>&#x201C;++&#x201D;</code> &#x548C; <code>&#x201C;&#x2013;&#x201D;</code> &#x5C31;&#x6709;&#x7279;&#x5225;&#x4E86;&#xFF0C;&#x5B83;&#x5011;&#x662F; unary &#x904B;&#x7B97;&#x7B26;&#xFF0C;&#x540C;&#x6642;&#x53C8;&#x53EF;&#x4EE5;&#x4F5C; pre-in/decrement &#x6216; post-in/decrement &#xFF0C;&#x9019;&#x6A23;&#x8981;&#x5982;&#x4F55;&#x8655;&#x7406;&#x5462;&#xFF1F;&#x897F;&#x5091;&#x5C31;&#x628A;&#x5B83;&#x5011;&#x7576;&#x6210; operand &#x4E00;&#x6A23;&#x4F86;&#x8655;&#x7406;&#xFF0C;&#x800C;&#x4E14;&#x4E00;&#x5B9A;&#x8981;&#x914D;&#x5408; identifier &#x4F7F;&#x7528;&#xFF0C;&#x770B;&#x770B;&#x4EE3;&#x78BC;&#x3002;</p>
+<pre><code class="lang-js"><span class="hljs-keyword">case</span> Token.tokens.IDENTIFIER_TOKEN:
+    operandNode = <span class="hljs-keyword">new</span> IdentifierNode(<span class="hljs-keyword">this</span>.currentToken.text);
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.lookahead() == Token.tokens.MINUSMINUS_TOKEN) {
+        <span class="hljs-comment">//post decrement</span>
+        <span class="hljs-keyword">this</span>.nextToken();
+        operandNode = <span class="hljs-keyword">new</span> PostDecrementNode(operandNode);
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.lookahead() == Token.tokens.PLUSPLUS_TOKEN) {
+        <span class="hljs-comment">//post increment</span>
+        <span class="hljs-keyword">this</span>.nextToken();
+        operandNode = <span class="hljs-keyword">new</span> PostIncrementNode(operandNode);
+    }
+<span class="hljs-keyword">break</span>;
+</code></pre>
+<p>&#x9996;&#x5148;&#x8655;&#x7406; post-in/decrement &#xFF0C;&#x65B9;&#x6CD5;&#x5F88;&#x7C21;&#x55AE;&#xFF0C;&#x5C31;&#x662F;&#x7576;&#x6211;&#x5011;&#x9047;&#x5230; identifier &#x6642;&#xFF0C;&#x6211;&#x5011;&#x5C31;&#x6703; lookahead &#x4E00;&#x4E0B;&#xFF0C;&#x770B;&#x770B;&#x6709;&#x6C92;&#x6709; <code>&#x201C;++&#x201D;</code> &#x6216;&#x8005; <code>&#x201C;&#x2013;&#x201D;</code> &#xFF0C;&#x6709;&#x7684;&#x8A71;&#x5C31;&#x7528; <code>PostIn/DecrementNode</code> &#x4F86;&#x53D6;&#x4EE3;&#x539F;&#x672C;&#x7684; <code>operandNode</code> &#xFF0C;&#x6C92;&#x6709;&#x5C31;&#x81EA;&#x7136;&#x4E0D;&#x7528;&#x7406;&#x6703;&#x5566;&#x3002;</p>
+<pre><code class="lang-js"><span class="hljs-keyword">case</span> Token.tokens.PLUSPLUS_TOKEN:
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.lookahead() == Token.tokens.IDENTIFIER_TOKEN) {
+        <span class="hljs-keyword">this</span>.nextToken();
+        operandNode = <span class="hljs-keyword">new</span> PreIncrementNode(newIdentifierNode(<span class="hljs-keyword">this</span>.currentToken.text));
+    } <span class="hljs-keyword">else</span> {
+        Errors.push({
+            type: Errors.SYNTAX_ERROR,
+            msg: <span class="hljs-string">&quot;Expecting an identifier for pre-increment expression&quot;</span>,
+            line: <span class="hljs-keyword">this</span>.scanner.currLine
+        });
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+    }
+    <span class="hljs-keyword">break</span>;
+</code></pre>
+<p>&#x4E4B;&#x5F8C;&#x8981;&#x589E;&#x52A0; <code>PreIn/Decrement</code> &#x7684;&#x8655;&#x7406;&#xFF0C;&#x5C31;&#x662F;&#x589E;&#x52A0;&#x4E00;&#x500B; case &#x5230; <code>parseOperand</code> &#x4E2D;&#xFF0C;&#x9047;&#x5230; <code>&#x201C;++&#x201D;</code> &#x6216; <code>&#x201C;&#x2013;&#x201D;</code> &#x5C31;&#x6703; lookahead &#x4E00;&#x4E0B;&#x770B;&#x770B;&#x6709;&#x6C92;&#x6709; identifier &#xFF0C;&#x6709;&#x7684;&#x8A71;&#x5C31;&#x662F; <code>PreIn/Decrement</code> &#xFF0C;&#x6C92;&#x6709;&#x7684;&#x8A71;&#x61C9;&#x8A72;&#x7B97;&#x662F; syntax error &#x4E86;&#x5427;&#x3002;</p>
+<p>&#x770B;&#x770B; <code>console.log</code> &#xFF0C;&#x9084;&#x662F;&#x904B;&#x4F5C;&#x6B63;&#x5E38;&#xFF0C;&#x90A3;&#x5C31;&#x5927;&#x529F;&#x544A;&#x6210;&#x5566;&#xFF01;&#xFF01;&#xFF01;</p>
+<h2 id="put-it-together">Put it together</h2>
+<p>&#x73FE;&#x5728;&#x770B;&#x770B;&#x5B8C;&#x6574;&#x7684; Parse tree&#xFF08;console.log&#xFF09;</p>
+<h2 id="&#x7E3D;&#x7D50;">&#x7E3D;&#x7D50;</h2>
+<p>&#x5169;&#x500B;&#x661F;&#x671F;&#x7684; Syntactic analysis &#x8AB2;&#x7A0B;&#x7D42;&#x65BC;&#x5B8C;&#x7D50;&#x4E86;&#xFF0C;&#x4E0D;&#x77E5;&#x9053;&#x5927;&#x5BB6;&#x5438;&#x6536;&#x4E86;&#x591A;&#x5C11;&#xFF0C;&#x5176;&#x5BE6;&#x7DE8;&#x5BEB; Parser &#x8AAA;&#x96E3;&#x4E0D;&#x96E3;&#xFF0C;&#x8AAA;&#x6613;&#x4E0D;&#x6613;&#xFF0C;&#x57FA;&#x672C;&#x4F86;&#x8AAA;&#x5C31;&#x662F;&#x4E00;&#x5806; mutual recursion&#xFF0C;&#x628A;&#x5927;&#x554F;&#x984C;&#x65AC;&#x4EF6;&#x6210;&#x70BA;&#x591A;&#x500B;&#x5C0F;&#x554F;&#x984C;&#xFF0C;&#x9010;&#x9EDE;&#x64CA;&#x7834;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#xFF0C;&#x53EA;&#x8981;&#x5927;&#x5BB6;&#x601D;&#x7DD2;&#x6E05;&#x6670;&#x7684;&#x8A71;&#xFF0C;&#x5176;&#x5BE6;&#x4E0D;&#x96E3;&#xFF08;&#x7576;&#x7136;&#x8981;&#x601D;&#x7DD2;&#x6E05;&#x6670;&#x4E5F;&#x78BA;&#x5BE6;&#x4E0D;&#x6613;&#xFF09;&#x3002;</p>
+<p>&#x5927;&#x5BB6;&#x53EF;&#x4EE5;&#x653E;&#x5FC3;&#xFF0C;&#x6700;&#x96E3;&#x6371;&#x7684;&#x6642;&#x523B;&#x5DF2;&#x7D93;&#x904E;&#x4E86;&#xFF0C;&#x4E0B;&#x4E00;&#x7AE0;&#x6703;&#x6BD4;&#x9019;&#x7AE0;&#x5BB9;&#x6613;&#x4E00;&#x9EDE;&#xFF0C;&#x5927;&#x5BB6;&#x5982;&#x679C;&#x4ECD;&#x7136;&#x672A;&#x641E;&#x6E05;&#x9019;&#x7AE0;&#x7684;&#x601D;&#x8DEF;&#x7684;&#x8A71;&#x4E0D;&#x59A8;&#x7559;&#x4E0B;&#x4F60;&#x7684;&#x554F;&#x984C;&#xFF0C;&#x897F;&#x5091;&#x4E00;&#x5B9A;&#x6703;&#x5118;&#x91CF;&#x89E3;&#x7B54;&#xFF0C;&#x62DC;&#x62DC;&#xFF0C;&#x4E0B;&#x661F;&#x671F;&#x518D;&#x898B;&#x3002;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="3-2.html" class="navigation navigation-prev " aria-label="Previous page: 語法分析器（Parser）﹣語法分析（Syntactic analysis）（中）">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="4.html" class="navigation navigation-next " aria-label="Next page: 語意分析（Semantic analysis）">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"語法分析器（Parser）﹣語法分析（Syntactic analysis）（下）","level":"1.7","depth":1,"next":{"title":"語意分析（Semantic analysis）","level":"1.8","depth":1,"path":"4.md","ref":"4.md","articles":[]},"previous":{"title":"語法分析器（Parser）﹣語法分析（Syntactic analysis）（中）","level":"1.6","depth":1,"path":"3-2.md","ref":"3-2.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"3-3.md","mtime":"2019-08-23T06:22:55.981Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-08-23T07:41:59.848Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

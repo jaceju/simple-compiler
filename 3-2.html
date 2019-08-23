@@ -1,0 +1,487 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>語法分析器（Parser）﹣語法分析（Syntactic analysis）（中） · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="3-3.html" />
+    
+    
+    <link rel="prev" href="3-1.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    前言
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="1.html">
+            
+                <a href="1.html">
+            
+                    
+                    簡介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="2-1.html">
+            
+                <a href="2-1.html">
+            
+                    
+                    掃瞄器（Scanner）﹣詞法分析（Lexical analysis）（上）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="2-2.html">
+            
+                <a href="2-2.html">
+            
+                    
+                    掃瞄器（Scanner）﹣詞法分析（Lexical analysis）（下）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="3-1.html">
+            
+                <a href="3-1.html">
+            
+                    
+                    語法分析器（Parser）﹣語法分析（Syntactic analysis）（上）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.6" data-path="3-2.html">
+            
+                <a href="3-2.html">
+            
+                    
+                    語法分析器（Parser）﹣語法分析（Syntactic analysis）（中）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="3-3.html">
+            
+                <a href="3-3.html">
+            
+                    
+                    語法分析器（Parser）﹣語法分析（Syntactic analysis）（下）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="4.html">
+            
+                <a href="4.html">
+            
+                    
+                    語意分析（Semantic analysis）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="5.html">
+            
+                <a href="5.html">
+            
+                    
+                    虛擬機（Virtual Machine）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="6-1.html">
+            
+                <a href="6-1.html">
+            
+                    
+                    編譯器（Compiler）﹣生成代碼（Code Generation）（上）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="6-2.html">
+            
+                <a href="6-2.html">
+            
+                    
+                    編譯器（Compiler）﹣生成代碼（Code Generation）（下）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" data-path="7.html">
+            
+                <a href="7.html">
+            
+                    
+                    優化器（Optimizer）﹣還可以更好
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >語法分析器（Parser）﹣語法分析（Syntactic analysis）（中）</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x4E09;&#x3001;&#x8A9E;&#x6CD5;&#x5206;&#x6790;&#x5668;&#xFF08;parser&#xFF09;&#xFE63;&#x8A9E;&#x6CD5;&#x5206;&#x6790;&#xFF08;syntactic-analysis&#xFF09;&#xFF08;&#x4E2D;&#xFF09;">&#x4E09;&#x3001;&#x8A9E;&#x6CD5;&#x5206;&#x6790;&#x5668;&#xFF08;Parser&#xFF09;&#xFE63;&#x8A9E;&#x6CD5;&#x5206;&#x6790;&#xFF08;Syntactic analysis&#xFF09;&#xFF08;&#x4E2D;&#xFF09;</h1>
+<p>&#x4E0A;&#x56DE;&#x63D0;&#x5230;&#xFF0C;&#x6211;&#x5011;&#x8981;&#x5BEB;&#x4E00;&#x500B; Recursive descent parser &#xFF0C;&#x5F9E; Scanner &#x4E00;&#x76F4;&#x8B80; Token &#x9032;&#x4F86;&#xFF0C;&#x4E26;&#x5EFA;&#x7ACB;&#x4E00;&#x68F5; Parse tree &#x3002;&#x5728;&#x5EFA;&#x7ACB;&#x9014;&#x4E2D;&#xFF0C;&#x6211;&#x5011;&#x9084;&#x7528;&#x4E86; lookahead &#x7684;&#x6280;&#x5DE7;&#xFF0C;&#x5C31;&#x662F;&#x5077;&#x770B;&#x4E0B;&#x4E00;&#x500B; Token &#x4F46;&#x662F;&#x4E0D;&#x6703;&#x4F54;&#x7528;&#x5B83;&#xFF0C;&#x539F;&#x56E0;&#x662F;&#x6211;&#x5011;&#x9700;&#x8981;&#x7528;&#x5B83;&#x4F86;&#x5224;&#x65B7;&#x4E0B;&#x4E00;&#x6B65;&#x600E;&#x9EBC;&#x8D70;&#xFF0C;&#x4F46;&#x662F;&#x6211;&#x5011;&#x53C8;&#x4E0D;&#x80FD;&#x7528;&#x6389;&#x5B83;&#xFF0C;&#x5426;&#x5247;&#x5230;&#x4E0B;&#x4E00;&#x6B65;&#x6642;&#x6211;&#x5011;&#x5C31;&#x7528;&#x4E0D;&#x5230;&#x4E86;&#x3002;&#x73FE;&#x5728;&#x6211;&#x5011;&#x5C31;&#x4F86;&#x5B8C;&#x6210;&#x9918;&#x4E0B;&#x7684;&#x90E8;&#x4EFD;&#x5427;&#xFF01;</p>
+<p>&#x4E0A;&#x56DE;&#x6211;&#x5011;&#x53EA;&#x8655;&#x7406;&#x4E86; <code>print</code> &#x548C;&#x6578;&#x5B57;&#xFF0C;&#x73FE;&#x5728;&#x6211;&#x5011;&#x4F86;&#x8655;&#x7406;&#x4E00;&#x4E0B; <code>var</code> &#x5427;&#x3002; <code>var</code> &#x4E3B;&#x8981;&#x6709;&#x5169;&#x7A2E;&#x5BEB;&#x6CD5;&#xFF0C;&#x7B2C;&#x4E00;&#x7A2E;&#x662F;&#x7D14;&#x7CB9;&#x5B9A;&#x7FA9;&#x4E00;&#x500B;&#x8B8A;&#x6578;&#xFF0C;&#x5373;&#xFF1A;</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> a:bool;
+</code></pre>
+<p>&#x7B2C;&#x4E8C;&#x7A2E;&#x662F;&#x9664;&#x4E86;&#x5B9A;&#x7FA9;&#x8B8A;&#x6578;&#x4E4B;&#x5916;&#xFF0C;&#x9084;&#x6703; initialise &#x4E00;&#x4E0B;&#x90A3;&#x500B;&#x8B8A;&#x6578;&#xFF0C;&#x5373;&#xFF1A;</p>
+<pre><code class="lang-js"><span class="hljs-keyword">var</span> a:int = <span class="hljs-number">1</span>;
+</code></pre>
+<p>&#x90A3;&#x6211;&#x5011;&#x5148;&#x4F86;&#x5B9A;&#x7FA9;&#x4E00;&#x500B;&#x65B0;&#x7684; Node &#x5427;&#x3002;</p>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">VariableNode</span>(<span class="hljs-params">varName, type, initExpressionNode</span>) </span>{
+    <span class="hljs-keyword">this</span>.varName = varName;
+    <span class="hljs-keyword">this</span>.type = type;
+    <span class="hljs-keyword">this</span>.initExpressionNode = initExpressionNode;
+}
+extend(VariableNode, Node);
+</code></pre>
+<p><code>VariableNode</code> &#x8981;&#x8A18;&#x8457;&#x4E09;&#x6A23;&#x8CC7;&#x6599;&#xFF0C;&#x7B2C;&#x4E00;&#x662F;&#x8B8A;&#x6578;&#x7684;&#x540D;&#x7A31;&#xFF0C;&#x7B2C;&#x4E8C;&#x662F;&#x8B8A;&#x6578;&#x7684;&#x985E;&#x578B;&#xFF0C;&#x7B2C;&#x4E09;&#x662F; initialise &#x7684; expression&#xFF08;&#x9019;&#x500B;&#x53EF;&#x4EE5;&#x662F; <code>null</code>&#xFF09;&#x3002;&#x7136;&#x5F8C;&#x6211;&#x5011;&#x8981;&#x52A0;&#x591A;&#x4E00;&#x500B; case &#x5230; <code>parseExpression</code> &#x4E2D;</p>
+<pre><code class="lang-js"><span class="hljs-keyword">case</span> Token.tokens.VAR_TOKEN:
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.parseVarExpression();
+    <span class="hljs-keyword">break</span>;
+</code></pre>
+<p>&#x9047;&#x5230; <code>var</code> &#x6642;&#x5C31;&#x8981;&#x555F;&#x52D5; <code>parseVarExpression</code> &#x7A0B;&#x5E8F;&#xFF1A;</p>
+<pre><code class="lang-js">Parser.prototype.parseVarExpression = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">//consume &quot;var&quot;</span>
+    <span class="hljs-keyword">this</span>.nextToken();
+    <span class="hljs-comment">//expecting an identifier</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.lookahead() == Token.tokens.IDENTIFIER_TOKEN) {
+        <span class="hljs-keyword">this</span>.nextToken();
+        <span class="hljs-keyword">var</span> varName = <span class="hljs-keyword">this</span>.currentToken.text;
+        <span class="hljs-comment">//consume a colon</span>
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.nextToken() != Token.tokens.COLON_TOKEN) {
+            <span class="hljs-keyword">this</span>.skipError();
+            <span class="hljs-keyword">return</span>;
+        }
+        <span class="hljs-comment">//type token</span>
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.lookahead() != Token.tokens.TYPE_TOKEN) {
+            <span class="hljs-keyword">this</span>.skipError();
+            <span class="hljs-keyword">return</span>;
+        }
+        <span class="hljs-keyword">this</span>.nextToken();
+        <span class="hljs-keyword">var</span> typeName = <span class="hljs-keyword">this</span>.currentToken.text;
+        <span class="hljs-keyword">var</span> initNode;
+        <span class="hljs-comment">//check if it has initialization expression</span>
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.lookahead() == Token.tokens.ASSIGN_TOKEN) {
+            initNode = <span class="hljs-keyword">this</span>.parseSimpleAssignmentExpression();
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> VariableNode(varName, typeName, initNode);
+    }
+    <span class="hljs-keyword">this</span>.skipError();
+}
+Parser.prototype.parseSimpleAssignmentExpression = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">//consume the &quot;=&quot; sign</span>
+    <span class="hljs-keyword">this</span>.nextToken();
+    <span class="hljs-keyword">var</span> expressionNode = <span class="hljs-keyword">this</span>.parseExpression();
+    <span class="hljs-keyword">return</span> expressionNode;
+}
+</code></pre>
+<p>Parse <code>&#x201C;var&#x201D;</code> &#x7684;&#x65B9;&#x6CD5;&#x5176;&#x5BE6;&#x5C31;&#x662F;&#x7528; <code>lookahead</code> &#x540C; <code>nextToken</code> &#x4F86;&#x8B80;&#x53D6; Token&#xFF0C;&#x7136;&#x5F8C;&#x518D;&#x6AA2;&#x67E5;&#x4E00;&#x4E0B;&#x9019;&#x500B; Token &#x662F;&#x4E0D;&#x662F;&#x6211;&#x5011;&#x60F3;&#x8981;&#x7684; Token&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x662F;&#x7684;&#x8A71;&#x5C31; call &#x4E00;&#x4E0B; <code>skipError</code> &#x4F86;&#x8DF3;&#x904E;&#x63A5;&#x4E0B;&#x4F86;&#x7684; Token&#xFF0C;&#x5230;&#x6700;&#x5F8C;&#x5C31;&#x6AA2;&#x67E5;&#x4E00;&#x4E0B; <code>&#x201C;=&#x201D;</code> &#x6709;&#x6C92;&#x6709;&#x51FA;&#x73FE;&#xFF0C;&#x51FA;&#x73FE;&#x4E86;&#x7684;&#x8A71;&#x5C31;&#x518D; parse &#x63A5;&#x4E0B;&#x4F86;&#x7684; initialisation expression &#x3002;&#x73FE;&#x5728;&#x770B;&#x770B; <code>skipError</code> &#x7684;&#x505A;&#x6CD5;&#xFF1A;</p>
+<pre><code class="lang-js"><span class="hljs-comment">//a naive implementation for skipping error</span>
+Parser.prototype.skipError = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">this</span>.scanner.skipNewLine = <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">while</span> (<span class="hljs-keyword">this</span>.lookahead() != Token.tokens.NEWLINE_TOKEN &amp;&amp;<span class="hljs-keyword">this</span>.lookahead() != Token.tokens.EOS_TOKEN) {
+        <span class="hljs-keyword">this</span>.nextToken();
+    }
+    <span class="hljs-keyword">this</span>.scanner.skipNewLine = <span class="hljs-literal">true</span>;
+}
+</code></pre>
+<p>&#x65B9;&#x6CD5;&#x5F88;&#x7C21;&#x55AE;&#xFF0C;&#x5176;&#x5BE6;&#x5C31;&#x662F;&#x4E00;&#x76F4;&#x8DF3;&#x904E;&#x63A5;&#x4E0B;&#x4F86;&#x7684; Token &#xFF0C;&#x76F4;&#x81F3;&#x8B80;&#x5230;&#x65B0;&#x4E00;&#x884C;&#x6216;&#x8005;&#x518D;&#x6C92;&#x6709; Token &#x70BA;&#x6B62;&#x3002;</p>
+<p>&#x70BA;&#x4EC0;&#x9EBC;&#x6211;&#x5011;&#x8981;&#x8DF3;&#x904E;&#x67D0;&#x4E9B; Token &#x5462;&#xFF1F;</p>
+<p>&#x4E00;&#x500B;&#x597D;&#x7684; Compiler &#x4E0D;&#x61C9;&#x8A72;&#x4E00;&#x9047;&#x5230;&#x932F;&#x8AA4;&#x5C31;&#x505C;&#x6B62;&#xFF0C;&#x800C;&#x662F;&#x8981;&#x5118;&#x91CF;&#x628A;&#x6574;&#x500B;&#x7A0B;&#x5F0F;&#x4E2D;&#x7684;&#x932F;&#x8AA4;&#x544A;&#x77E5;&#x958B;&#x767C;&#x4EBA;&#x54E1;&#x4EE5;&#x4FBF; debug &#x3002;</p>
+<p>&#x8A66;&#x884C;&#x4E00;&#x4E0B;&#xFF0C;&#x770B;&#x770B;&#x5B83;&#x6709;&#x6C92;&#x6709;&#x505A; Error recovery &#x4EE5;&#x53CA;&#x80FD;&#x5426; parse <code>&#x201C;var&#x201D;</code> expression &#x3002;</p>
+<p><img src="images/3-2-1.png" alt=""></p>
+<p>&#x5F88;&#x597D;&#xFF0C;&#x4E0D;&#x4F46;&#x6210;&#x529F;&#x5EFA;&#x7ACB;&#x5230;&#x6B63;&#x78BA;&#x7684; Parse tree &#xFF0C;&#x4EA6;&#x6210;&#x529F;&#x5730;&#x8DF3;&#x904E;&#x4E86;&#x932F;&#x8AA4;&#x3002;</p>
+<h2 id="expression-block">Expression block</h2>
+<p>&#x63A5;&#x8457;&#x4E0B;&#x4F86;&#x6211;&#x5011;&#x8981;&#x8655;&#x7406; <code>if</code> &#x548C; <code>while</code> &#xFF0C;&#x5B83;&#x5011;&#x8DDF;&#x6211;&#x5011;&#x4E4B;&#x524D;&#x8655;&#x7406;&#x904E;&#x7684; expression &#x6709;&#x5206;&#x5225;&#xFF0C;&#x5206;&#x5225;&#x5728;&#x65BC;&#x5B83;&#x5011;&#x7684;&#x7D50;&#x69CB;&#x4E0D;&#x662F;&#x4E00;&#x53E5; expression &#x63A5;&#x8457;&#x4E00;&#x500B;&#x5206;&#x865F;&#x5C31;&#x6210;&#x70BA;&#x4E00;&#x500B; expression node&#xFF0C;&#x800C;&#x662F;&#x5148;&#x6709;&#x4E00;&#x500B; condition &#x518D;&#x914D;&#x4E00;&#xFF0F;&#x5169;&#x500B; expression block&#xFF0C;&#x6700;&#x5F8C;&#x9084;&#x6C92;&#x6709;&#x5206;&#x865F;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x5011;&#x8981;&#x6539;&#x5BEB;&#x4E00;&#x4E0B; <code>parseExpressions</code> &#xFF0C;&#x628A;&#x8B80;&#x5206;&#x865F;&#x7684;&#x7A0B;&#x5F0F;&#x79FB;&#x5230;&#x6BCF;&#x4E00;&#x53E5;&#x671F;&#x5F85;&#x5206;&#x865F;&#x7684; expression &#x4E2D;&#x3002;</p>
+<pre><code class="lang-js">Parser.prototype.matchSemicolon = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">//consume the semicolon</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.lookahead() == Token.tokens.SEMICOLON_TOKEN) {
+        <span class="hljs-keyword">this</span>.nextToken();
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-comment">//syntax error</span>
+        Errors.push({
+            type: Errors.SYNTAX_ERROR,
+            msg: <span class="hljs-string">&quot;Expecting a semicolon at the end of expression&quot;</span>,
+            line: <span class="hljs-keyword">this</span>.scanner.currLine
+        });
+    }
+}
+</code></pre>
+<p>&#x628A; match &#x5206;&#x865F;&#x7684;&#x7A0B;&#x5F0F;&#x62BD;&#x51FA;&#x4F86;&#xFF0C;&#x53EB; <code>matchSemicolon</code> &#xFF0C;&#x65B9;&#x4FBF;&#x5F8C;&#x9762;&#x4F7F;&#x7528;&#x3002;</p>
+<pre><code class="lang-js"><span class="hljs-keyword">case</span> Token.tokens.IF_TOKEN:
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.parseIfExpression();
+    <span class="hljs-keyword">break</span>;
+<span class="hljs-keyword">case</span> Token.tokens.WHILE_TOKEN:
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.parseWhileExpression();
+    <span class="hljs-keyword">break</span>;
+</code></pre>
+<p>&#x65B0;&#x589E;&#x5169;&#x500B; case &#x5230; <code>parseExpression</code> &#x4E2D;&#xFF0C;&#x9047;&#x5230; <code>if</code> &#x6216;&#x8005; <code>while</code> Token &#x90FD;&#x6703;&#x53E6;&#x5916;&#x8655;&#x7406;&#x3002;</p>
+<pre><code class="lang-js">Parser.prototype.parseIfExpression = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">//consume &quot;if&quot;</span>
+    <span class="hljs-keyword">this</span>.nextToken();
+    <span class="hljs-keyword">var</span> condition = <span class="hljs-keyword">this</span>.parseParenExpression();
+    <span class="hljs-keyword">var</span> expressions = <span class="hljs-keyword">this</span>.parseExpressionBlock();
+    <span class="hljs-keyword">var</span> elseExpressions;
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.lookahead() == Token.tokens.ELSE_TOKEN) {
+        <span class="hljs-comment">//consume &quot;else&quot;</span>
+        <span class="hljs-keyword">this</span>.nextToken();
+        elseExpressions = <span class="hljs-keyword">this</span>.parseExpressionBlock();
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> IfNode(condition, expressions, elseExpressions);
+}
+</code></pre>
+<p>&#x9047;&#x5230; <code>if</code> &#x7684;&#x6642;&#x5019;&#x8981;&#x505A;&#x4EC0;&#x9EBC;&#x5462;&#xFF1F;&#x9996;&#x5148;&#x7576;&#x7136;&#x662F;&#x8B80;&#x53D6; condition&#xFF0C;&#x5C31;&#x662F;&#x90A3;&#x53E5; <code>parseParenExpression</code> &#xFF0C;&#x7136;&#x5F8C;&#x5C31;&#x8981;&#x8B80;&#x53D6;&#x4E00;&#x500B; expression block &#xFF0C;&#x5373;&#x88AB; <code>&#x201C;{&#x201D;</code> <code>&#x201C;}&#x201D;</code> &#x5305;&#x4F4F;&#x7684; expression list &#xFF0C;&#x63A5;&#x8457;&#x9084;&#x8981;&#x5224;&#x65B7;&#x4E00;&#x4E0B;&#x6709;&#x6C92;&#x6709; <code>else</code> &#xFF0C;&#x6709;&#x7684;&#x8A71;&#x9084;&#x8981;&#x8B80;&#x53D6;&#x6574;&#x500B; else block &#x9032;&#x4F86;&#x3002; <code>while</code> &#x7684;&#x505A;&#x6CD5;&#x8DDF; if &#x5DEE;&#x4E0D;&#x591A;&#xFF0C;&#x9019;&#x88E1;&#x5C31;&#x4E0D;&#x591A;&#x8A0E;&#x8AD6;&#x4E86;&#x3002;</p>
+<p><img src="images/3-2-2.png" alt=""></p>
+<p>&#x9084;&#x6709;&#x500B; boss &#x8981;&#x6253;&#xFF0C;&#x5C31;&#x662F;&#x90A3;&#x5806;&#x904B;&#x7B97;&#x7B26;&#x4E86;&#xFF0C;&#x7531;&#x65BC;&#x9019;&#x90E8;&#x4EFD;&#x6BD4;&#x8F03;&#x8907;&#x96DC;&#xFF0C;&#x6240;&#x4EE5;&#x897F;&#x5091;&#x6C7A;&#x5B9A;&#x958B;&#x591A;&#x4E00;&#x7BC0;&#x8A73;&#x8AC7;&#x7576;&#x4E2D;&#x7684;&#x7D30;&#x7BC0;&#xFF0C;&#x4E0B;&#x661F;&#x671F;&#x56DB;&#x518D;&#x898B;&#x5427;&#xFF01;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="3-1.html" class="navigation navigation-prev " aria-label="Previous page: 語法分析器（Parser）﹣語法分析（Syntactic analysis）（上）">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="3-3.html" class="navigation navigation-next " aria-label="Next page: 語法分析器（Parser）﹣語法分析（Syntactic analysis）（下）">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"語法分析器（Parser）﹣語法分析（Syntactic analysis）（中）","level":"1.6","depth":1,"next":{"title":"語法分析器（Parser）﹣語法分析（Syntactic analysis）（下）","level":"1.7","depth":1,"path":"3-3.md","ref":"3-3.md","articles":[]},"previous":{"title":"語法分析器（Parser）﹣語法分析（Syntactic analysis）（上）","level":"1.5","depth":1,"path":"3-1.md","ref":"3-1.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"3-2.md","mtime":"2019-08-22T10:47:49.454Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-08-23T07:41:59.848Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

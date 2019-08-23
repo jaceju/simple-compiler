@@ -1,0 +1,659 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>掃瞄器（Scanner）﹣詞法分析（Lexical analysis）（下） · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="3-1.html" />
+    
+    
+    <link rel="prev" href="2-1.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    前言
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="1.html">
+            
+                <a href="1.html">
+            
+                    
+                    簡介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="2-1.html">
+            
+                <a href="2-1.html">
+            
+                    
+                    掃瞄器（Scanner）﹣詞法分析（Lexical analysis）（上）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4" data-path="2-2.html">
+            
+                <a href="2-2.html">
+            
+                    
+                    掃瞄器（Scanner）﹣詞法分析（Lexical analysis）（下）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="3-1.html">
+            
+                <a href="3-1.html">
+            
+                    
+                    語法分析器（Parser）﹣語法分析（Syntactic analysis）（上）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="3-2.html">
+            
+                <a href="3-2.html">
+            
+                    
+                    語法分析器（Parser）﹣語法分析（Syntactic analysis）（中）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="3-3.html">
+            
+                <a href="3-3.html">
+            
+                    
+                    語法分析器（Parser）﹣語法分析（Syntactic analysis）（下）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="4.html">
+            
+                <a href="4.html">
+            
+                    
+                    語意分析（Semantic analysis）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="5.html">
+            
+                <a href="5.html">
+            
+                    
+                    虛擬機（Virtual Machine）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="6-1.html">
+            
+                <a href="6-1.html">
+            
+                    
+                    編譯器（Compiler）﹣生成代碼（Code Generation）（上）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="6-2.html">
+            
+                <a href="6-2.html">
+            
+                    
+                    編譯器（Compiler）﹣生成代碼（Code Generation）（下）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" data-path="7.html">
+            
+                <a href="7.html">
+            
+                    
+                    優化器（Optimizer）﹣還可以更好
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >掃瞄器（Scanner）﹣詞法分析（Lexical analysis）（下）</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x4E8C;&#x3001;&#x6383;&#x7784;&#x5668;&#xFF08;scanner&#xFF09;&#xFE63;&#x8A5E;&#x6CD5;&#x5206;&#x6790;&#xFF08;lexical-analysis&#xFF09;&#xFF08;&#x4E0B;&#xFF09;">&#x4E8C;&#x3001;&#x6383;&#x7784;&#x5668;&#xFF08;Scanner&#xFF09;&#xFE63;&#x8A5E;&#x6CD5;&#x5206;&#x6790;&#xFF08;Lexical analysis&#xFF09;&#xFF08;&#x4E0B;&#xFF09;</h1>
+<p>&#x7E7C;&#x7E8C;&#x4E0A;&#x4E00;&#x7BC0;&#x672A;&#x5B8C;&#x6210;&#x7684; Scanner &#x5427;&#xFF0C;&#x4E0A;&#x4E00;&#x7BC0;&#x6211;&#x5011;&#x5BEB;&#x597D;&#x4E86;&#x4E00;&#x500B; Reader &#xFF0C;&#x53EF;&#x4EE5;&#x9010;&#x500B;&#x9010;&#x500B;&#x5B57;&#x5143;&#x8B80;&#x53D6;&#xFF0C;&#x6709;&#x9700;&#x8981;&#x6642;&#x53C8;&#x53EF;&#x4EE5;&#x9000;&#x56DE; n &#x500B;&#x5B57;&#x5143;&#x4E4B;&#x5F8C;&#x518D;&#x8B80;&#xFF08;&#x672C;&#x7BC0;&#x5C07;&#x6703;&#x4F7F;&#x7528;&#x9019;&#x500B;&#x529F;&#x80FD;&#xFF09;&#x3002;&#x53E6;&#x5916;&#xFF0C;&#x4E0A;&#x4E00;&#x7BC0;&#x4EA6;&#x5BEB;&#x597D;&#x4E86;&#x4E00;&#x500B;&#x7C21;&#x55AE;&#x7684; Scanner &#xFF0C;&#x53EF;&#x4EE5;&#x8B80;&#x53D6;&#x4E03;&#x6B3E;&#x55AE;&#x5B57;&#x5143; Token &#xFF0C;&#x4E26;&#x5FFD;&#x7565;&#x5176;&#x4ED6;&#x5B57;&#x5143;&#x3002;&#x672C;&#x7BC0;&#x5C07;&#x6703;&#x6559;&#x5927;&#x5BB6;&#x5982;&#x4F55;&#x5EFA;&#x7ACB;&#x591A;&#x5B57;&#x5143; Token &#xFF0C;&#x904E;&#x7A0B;&#x5C07;&#x6703;&#x5229;&#x7528; FSM &#x4F86;&#x5206;&#x6790;&#x5B57;&#x5143;&#xFF0C;&#x5FD8;&#x8A18;&#x4E86;&#x4EC0;&#x9EBC;&#x662F; FSM &#x7684;&#x670B;&#x53CB;&#x8ACB;&#x5230;&#x4E0A;&#x4E00;&#x7BC0;&#x56DE;&#x9867;&#x4E00;&#x4E0B;&#x5695;&#x3002;</p>
+<h2 id="&#x591A;&#x5B57;&#x5143;&#x7684;-token">&#x591A;&#x5B57;&#x5143;&#x7684; Token</h2>
+<p>&#x9996;&#x5148;&#x6211;&#x5011;&#x8981;&#x8B80;&#x53D6;&#x542B;&#x6709;&#x82F1;&#x6587;&#x5B57;&#x7684; Token&#xFF0C;&#x542B;&#x6709;&#x82F1;&#x6587;&#x5B57;&#x7684; Token &#x5982;&#x4E0B;&#xFF1A;</p>
+<pre><code>var VAR_TOKEN
+
+int TYPE_TOKEN
+
+bool TYPE_TOKEN
+
+true, false, TRUE, FALSE BOOLLITERAL_TOKEN
+
+if IF_TOKEN
+
+else ELSE_TOKEN
+
+while WHILE_TOKEN
+
+print PRINT_TOKEN
+
+&#x5176;&#x4ED6;&#x82F1;&#x6587;&#x5B57; IDENTIFIER_TOKEN
+</code></pre><p>&#x5728;&#x7A0B;&#x5F0F;&#x4E2D;&#x5148;&#x5B9A;&#x7FA9;&#x4E00;&#x4E0B;&#x9019;&#x4E9B; Token &#x5427;&#xFF0C;&#x627F;&#x63A5;&#x8457;&#x4E4B;&#x524D;&#x7684; Token &#x5B9A;&#x7FA9;&#xFF0C;&#x589E;&#x52A0;&#x4EE5;&#x4E0B;&#x7684;&#x5B9A;&#x7FA9;&#x3002;</p>
+<pre><code class="lang-js">Token.tokens.VAR_TOKEN = Token.tokens.MOD_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.TYPE_TOKEN = Token.tokens.VAR_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.BOOLLITERAL_TOKEN = Token.tokens.TYPE_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.IF_TOKEN = Token.tokens.BOOLLITERAL_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.ELSE_TOKEN = Token.tokens.IF_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.WHILE_TOKEN = Token.tokens.ELSE_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.PRINT_TOKEN = Token.tokens.WHILE_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.IDENTIFIER_TOKEN = Token.tokens.PRINT_TOKEN + <span class="hljs-number">1</span>;
+</code></pre>
+<p>&#x73FE;&#x5728;&#x8981;&#x4FEE;&#x6539;&#x6211;&#x5011;&#x7684; FSM&#xFF0C;&#x9047;&#x898B;&#x6709;&#x82F1;&#x6587;&#x5B57;&#x7684;&#x6642;&#x5019;&#x6211;&#x5011;&#x5C31;&#x8981;&#x8F49;&#x63DB;&#x4E00;&#x4E0B; FSM &#x7684;&#x72C0;&#x614B;&#xFF0C;&#x8F49;&#x5230;&#x8B80;&#x53D6;&#x6574;&#x500B;&#x82F1;&#x6587;&#x8A5E;&#x7684;&#x72C0;&#x614B;&#xFF0C;&#x6211;&#x7A31;&#x5B83;&#x70BA; <code>IDENTIFIER_STATE</code> &#x5427;&#x3002;</p>
+<pre><code class="lang-js">Scanner.IDENTIFIER_STATE = Scanner.START_STATE + <span class="hljs-number">1</span>;
+
+<span class="hljs-keyword">case</span> Scanner.START_STATE:
+    <span class="hljs-keyword">var</span> c = <span class="hljs-keyword">this</span>.reader.nextChar();
+    <span class="hljs-keyword">if</span> ((c &gt;= <span class="hljs-string">&quot;a&quot;</span> &amp;&amp; c &lt;= <span class="hljs-string">&quot;z&quot;</span>) || (c &gt;= <span class="hljs-string">&quot;A&quot;</span> &amp;&amp; c &lt;= <span class="hljs-string">&quot;Z&quot;</span>)) {
+        <span class="hljs-keyword">this</span>.state = Scanner.IDENTIFIER_STATE;
+        <span class="hljs-comment">//we need to remember what the token&apos;s text is</span>
+        bufferStr = c;
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">switch</span> (c) {
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;:&quot;</span>:
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.COLON_TOKEN);
+            <span class="hljs-keyword">break</span>;
+            <span class="hljs-comment">//...and more written in the previous section</span>
+        }
+    }
+    <span class="hljs-keyword">break</span>;
+</code></pre>
+<p>&#x9019;&#x88E1;&#x6211;&#x5011;&#x4FEE;&#x6539;&#x4E86;&#x5148;&#x524D;&#x5BEB;&#x7684; <code>START_STATE</code> &#xFF0C;&#x73FE;&#x5728;&#x53EA;&#x8981;&#x4E00;&#x9047;&#x5230;&#x82F1;&#x6587;&#x5B57;&#xFF0C; FSM &#x7684;&#x72C0;&#x614B;&#x5C31;&#x6703;&#x6539;&#x8B8A;&#x70BA; <code>IDENTIFIER_STATE</code> &#x3002;&#x9664;&#x4E86;&#x6539;&#x8B8A;&#x4E86;&#x72C0;&#x614B;&#x4E4B;&#x5916;&#xFF0C;&#x6211;&#x5011;&#x9084;&#x8981;&#x8A18;&#x4E0B;&#x525B;&#x8B80;&#x9032;&#x4F86;&#x7684;&#x5B57;&#x5143;&#x5230; <code>bufferStr</code> &#x4E2D;&#xFF0C;&#x56E0;&#x70BA;&#x5F8C;&#x9762;&#x6211;&#x5011;&#x53EF;&#x80FD;&#x9700;&#x8981;&#x7528;&#x5B83;&#x4F86;&#x5206;&#x8FA8;&#x90A3;&#x500B; Token &#x771F;&#x6B63;&#x7684;&#x610F;&#x601D;&#xFF0C;&#x4F8B;&#x5982; <code>true</code> <code>false</code> &#xFF0C;&#x6211;&#x5011;&#x53EA;&#x6703;&#x6709;&#x4E00;&#x500B; Token &#x53EB;&#x505A; <code>BOOLLITERAL_TOKEN</code> &#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x5011;&#x9700;&#x8981;&#x7528; <code>&#x201C;true&#x201D;</code> &#x6216;&#x8005; <code>&#x201C;false&#x201D;</code> &#x4F86;&#x8A18;&#x4F4F;&#x9019;&#x500B; Token &#x771F;&#x6B63;&#x7684;&#x610F;&#x601D;&#x4E86;&#x3002;</p>
+<p>&#x70BA;&#x4EC0;&#x9EBC;&#x4E0D;&#x5275;&#x9020;&#x5169;&#x500B; Token &#xFF0C;&#x4E00;&#x500B;&#x53EB;&#x505A; <code>TRUE_TOKEN</code> &#xFF0C;&#x4E00;&#x500B;&#x53EB;&#x505A; <code>FALSE_TOKEN</code> &#x5462;&#xFF1F;</p>
+<p>&#x5176;&#x5BE6;&#x5206;&#x5225;&#x4E0D;&#x5927;&#xFF0C;&#x53EA;&#x5728;&#x4E4E;&#x4F60;&#x60F3;&#x628A;&#x5DE5;&#x4F5C;&#x7559;&#x5230; Parser &#x624D;&#x8655;&#x7406;&#x9084;&#x662F;&#x73FE;&#x5728;&#x5C31;&#x5206;&#x597D;&#xFF0C;&#x6211;&#x500B;&#x4EBA;&#x6BD4;&#x8F03;&#x504F;&#x597D;&#x628A;&#x76F8;&#x540C;&#x985E;&#x578B;&#xFF08;&#x5373;&#x5F8C;&#x9762;&#x8655;&#x7406;&#x65B9;&#x6CD5;&#x5927;&#x540C;&#x5C0F;&#x7570;&#x7684;&#xFF09;&#x7684;&#x5B57;&#x5408;&#x4F75;&#x6210;&#x4E00;&#x500B; Token &#x3002;</p>
+<p>&#x597D;&#x4E86;&#xFF0C;&#x73FE;&#x5728;&#x8981;&#x5BEB;&#x4E00;&#x5BEB; <code>IDENTIFIER_STATE</code> &#x4E86;&#x3002;</p>
+<pre><code class="lang-js"><span class="hljs-keyword">case</span> Scanner.IDENTIFIER_STATE:
+    <span class="hljs-keyword">var</span> c = <span class="hljs-keyword">this</span>.reader.nextChar();
+    <span class="hljs-keyword">if</span> ((c &gt;= <span class="hljs-string">&quot;a&quot;</span> &amp;&amp; c &lt;= <span class="hljs-string">&quot;z&quot;</span>) || (c &gt;= <span class="hljs-string">&quot;A&quot;</span> &amp;&amp; c &lt;= <span class="hljs-string">&quot;Z&quot;</span>)) {
+        bufferStr += c;
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-comment">//stop reading it since it is not a letter anymore</span>
+        <span class="hljs-comment">//retract the last character we read because it does not belong to this identfier</span>
+        <span class="hljs-keyword">this</span>.reader.retract();
+        <span class="hljs-comment">//change back the state to read the next token</span>
+        <span class="hljs-keyword">this</span>.state = Scanner.START_STATE;
+        <span class="hljs-keyword">switch</span> (bufferStr) {
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;var&quot;</span>:
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.VAR_TOKEN);
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;int&quot;</span>: <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;bool&quot;</span>:
+                <span class="hljs-comment">//need to pass bufferStr as well to distinguish which type it is</span>
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.TYPE_TOKEN, bufferStr);
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;true&quot;</span>: <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;false&quot;</span>:
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;TRUE&quot;</span>: <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;FALSE&quot;</span>:
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.BOOLLITERAL_TOKEN, bufferStr);
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;if&quot;</span>:
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.IF_TOKEN);
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;else&quot;</span>:
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.ELSE_TOKEN);
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;while&quot;</span>:
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.WHILE_TOKEN);
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;print&quot;</span>:
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.PRINT_TOKEN);
+            <span class="hljs-keyword">default</span>:
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.IDENTIFIER_TOKEN, bufferStr);
+        }
+    }
+    <span class="hljs-keyword">break</span>;
+</code></pre>
+<p>&#x5728; <code>IDENTIFIER_STATE</code> &#x4E2D;&#x8981;&#x8655;&#x7406;&#x5E7E;&#x4EF6;&#x4E8B;&#xFF0C;&#x7B2C;&#x4E00;&#x8B80;&#x53D6;&#x4E0B;&#x4E00;&#x500B;&#x5B57;&#x5143;&#xFF0C;&#x5982;&#x679C;&#x9019;&#x500B;&#x5B57;&#x5143;&#x4ECD;&#x7136;&#x662F;&#x82F1;&#x6587;&#x5B57;&#x7684;&#x8A71;&#x5C31;&#x628A;&#x5B83;&#x52A0;&#x5230; <code>bufferStr</code> &#x4E2D;&#xFF0C;&#x4E0D;&#x7528;&#x6539;&#x8B8A; FSM &#x72C0;&#x614B;&#xFF0C;&#x7E7C;&#x7E8C;&#x8B80;&#x53D6;&#x4E0B;&#x4E00;&#x500B;&#x5B57;&#x5143;&#x3002;&#x7576;&#x8B80;&#x9032;&#x4F86;&#x7684;&#x5B57;&#x5143;&#x4E0D;&#x662F;&#x82F1;&#x6587;&#x5B57;&#x7684;&#x6642;&#x5019;&#xFF0C;&#x6211;&#x5011;&#x5C31;&#x53EF;&#x4EE5;&#x6539;&#x8B8A; FSM &#x72C0;&#x614B;&#xFF0C;&#x628A;&#x5B83;&#x8F49;&#x8B8A;&#x70BA; <code>START_STATE</code> &#x4EE5;&#x8B80;&#x53D6;&#x4E0B;&#x4E00;&#x500B; Token &#x3002;</p>
+<p>&#x5207;&#x8A18;&#x8981;&#x628A;&#x6700;&#x5F8C;&#x4E00;&#x500B;&#x8B80;&#x9032;&#x4F86;&#x7684;&#x5B57;&#x5143;&#x9000;&#x56DE;&#xFF0C;&#x56E0;&#x70BA;&#x9019;&#x500B;&#x5B57;&#x5143;&#x4E26;&#x4E0D;&#x5C6C;&#x65BC;&#x9019;&#x500B; Token &#x7684;&#xFF0C;&#x4E0D;&#x80FD;&#x9CE9;&#x5360;&#x4EBA;&#x5BB6;&#x7684;&#x9D72;&#x5DE2;&#x3002;</p>
+<p>&#x53C8;&#xFF0C;&#x5224;&#x65B7;&#x4E00;&#x4E0B; <code>bufferStr</code> &#x4E2D;&#x7684;&#x5B57;&#x662F;&#x4E0D;&#x662F;&#x95DC;&#x9375;&#x5B57;&#xFF08;Reserved word&#xFF09;&#xFF0C;&#x5982;&#x679C;&#x662F;&#x7684;&#x8A71;&#x5C31;&#x8FD4;&#x56DE;&#x76F8;&#x5C0D;&#x61C9;&#x7684; Token &#xFF0C;&#x4E0D;&#x7136;&#x5C31;&#x628A;&#x5B83;&#x7D71;&#x7A31;&#x70BA; <code>IDENTIFIER_TOKEN</code> &#xFF0C;&#x7559;&#x7D66; Parser &#x505A;&#x8A9E;&#x6CD5;&#x5206;&#x6790;&#x6642;&#x518D;&#x5224;&#x65B7;&#x5982;&#x4F55;&#x8655;&#x7406;&#x5B83;&#x3002;</p>
+<p>&#x73FE;&#x5728;&#x57F7;&#x884C;&#x4E00;&#x4E0B;&#x6211;&#x5011;&#x7684; Scanner &#xFF0C;&#x770B;&#x5B83;&#x662F;&#x5426;&#x904B;&#x4F5C;&#x6B63;&#x5E38;&#x3002;</p>
+<p>&#x6CE8;&#x610F;&#xFF0C; <code>var a:bool = true;</code> &#x7684;&#x90A3;&#x500B; <code>&#x201C;=&#x201D;</code> &#x6C92;&#x6709;&#x88AB;&#x5EFA;&#x7ACB;&#x70BA;&#x4E00;&#x500B; Token&#xFF0C;&#x56E0;&#x70BA;&#x6211;&#x5011;&#x6839;&#x672C;&#x9084;&#x672A;&#x8655;&#x7406;&#x3002;</p>
+<p>&#x73FE;&#x5728;&#x5C31;&#x628A;&#x9918;&#x4E0B;&#x7684; Token &#x90FD;&#x5B9A;&#x7FA9;&#x904E;&#x4F86;&#x5427;&#x3002;</p>
+<pre><code class="lang-js">Token.tokens.PLUS_TOKEN = Token.tokens.IDENTIFIER_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.PLUSPLUS_TOKEN = Token.tokens.PLUS_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.PLUSASSIGN_TOKEN = Token.tokens.PLUSPLUS_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.MINUS_TOKEN = Token.tokens.PLUSASSIGN_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.MINUSMINUS_TOKEN = Token.tokens.MINUS_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.MINUSASSIGN_TOKEN = Token.tokens.MINUSMINUS_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.MULT_TOKEN = Token.tokens.MINUSASSIGN_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.DIV_TOKEN = Token.tokens.MULT_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.ASSIGN_TOKEN = Token.tokens.DIV_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.EQUAL_TOKEN = Token.tokens.ASSIGN_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.NOTEQUAL_TOKEN = Token.tokens.EQUAL_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.GREATER_TOKEN = Token.tokens.NOTEQUAL_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.GREATEREQUAL_TOKEN = Token.tokens.GREATER_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.LESS_TOKEN = Token.tokens.GREATEREQUAL_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.LESSEQUAL_TOKEN = Token.tokens.LESS_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.AND_TOKEN = Token.tokens.LESSEQUAL_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.OR_TOKEN = Token.tokens.AND_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.NOT_TOKEN = Token.tokens.OR_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.LINECOMMENT_TOKEN = Token.tokens.NOT_TOKEN + <span class="hljs-number">1</span>;
+Token.tokens.BLOCKCOMMENT_TOKEN = Token.tokens.LINECOMMENT_TOKEN + <span class="hljs-number">1</span>;
+</code></pre>
+<p>&#x63A5;&#x8457;&#x5C31;&#x662F;&#x5728; <code>START_STATE</code> &#x88E1;&#x589E;&#x52A0;&#x4E00;&#x6BB5;&#x8FA8;&#x8A8D;&#x4EE5;&#x4E0A;&#x5B57;&#x5143;&#x7684; logic &#x4E86;&#x3002;</p>
+<pre><code class="lang-js"><span class="hljs-keyword">case</span> <span class="hljs-string">&quot;!&quot;</span>:
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.reader.nextChar() == <span class="hljs-string">&quot;=&quot;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.NOTEQUAL_TOKEN);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.reader.retract();
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.NOT_TOKEN);
+    }
+    <span class="hljs-keyword">break</span>;
+<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;+&quot;</span>:
+    <span class="hljs-keyword">var</span> d = <span class="hljs-keyword">this</span>.reader.nextChar();
+    <span class="hljs-keyword">if</span> (d == <span class="hljs-string">&quot;=&quot;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.PLUSASSIGN_TOKEN);
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (d == <span class="hljs-string">&quot;+&quot;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.PLUSPLUS_TOKEN);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.reader.retract();
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.PLUS_TOKEN);
+    }
+    <span class="hljs-keyword">break</span>;
+<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;-&quot;</span>:
+    <span class="hljs-keyword">var</span> d = <span class="hljs-keyword">this</span>.reader.nextChar();
+    <span class="hljs-keyword">if</span> (d == <span class="hljs-string">&quot;=&quot;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.MINUSASSIGN_TOKEN);
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (d == <span class="hljs-string">&quot;-&quot;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.MINUSMINUS_TOKEN);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.reader.retract();
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.MINUS_TOKEN);
+    }
+    <span class="hljs-keyword">break</span>;
+<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;*&quot;</span>:
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.MULT_TOKEN);
+    <span class="hljs-keyword">break</span>;
+<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;=&quot;</span>:
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.reader.nextChar() == <span class="hljs-string">&quot;=&quot;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.EQUAL_TOKEN);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.reader.retract();
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.ASSIGN_TOKEN);
+    }
+    <span class="hljs-keyword">break</span>;
+<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;&gt;&quot;</span>:
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.reader.nextChar() == <span class="hljs-string">&quot;=&quot;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.GREATEREQUAL_TOKEN);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.reader.retract();
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.GREATER_TOKEN);
+    }
+    <span class="hljs-keyword">break</span>;
+<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;&lt;&quot;</span>:
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.reader.nextChar() == <span class="hljs-string">&quot;=&quot;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.LESSEQUAL_TOKEN);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.reader.retract();
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.LESS_TOKEN);
+    }
+    <span class="hljs-keyword">break</span>;
+</code></pre>
+<p>&#x9019;&#x88E1;&#x6709;&#x5E7E;&#x500B;&#x5B57;&#x5143;&#x9084;&#x672A;&#x88AB;&#x8655;&#x7406;&#xFF0C;&#x56E0;&#x70BA;&#x5B83;&#x5011;&#x6BD4;&#x8F03;&#x7279;&#x5225;&#xFF0C;&#x5F85;&#x6703;&#x518D;&#x8AC7;&#x3002;&#x4EE5;&#x4E0A;&#x4E00;&#x6BB5;&#x7A0B;&#x5F0F;&#x6709;&#x5F88;&#x591A;&#x500B; case &#xFF0C;&#x4F46;&#x5B83;&#x5011;&#x505A;&#x7684;&#x5927;&#x81F4;&#x4E0A;&#x90FD;&#x5DEE;&#x4E0D;&#x591A;&#xFF0C;&#x5C31;&#x662F;&#x7576;&#x9047;&#x5230;&#x67D0;&#x500B;&#x5B57;&#x5143;&#xFF08;&#x4F8B;&#x5982; <code>&#x201C;+&#x201D;</code>&#xFF09;&#x6642;&#xFF0C;&#x5C31;&#x591A;&#x8B80;&#x4E00;&#x500B;&#x5B57;&#x5143;&#xFF0C;&#x5982;&#x679C;&#x9019;&#x500B;&#x5169;&#x500B;&#x5B57;&#x5143;&#x9023;&#x5728;&#x4E00;&#x8D77;&#x662F;&#x6709;&#x7279;&#x5225;&#x610F;&#x601D;&#x7684;&#x8A71;&#x5C31;&#x5148;&#x8FD4;&#x56DE;&#x9019;&#x500B;&#x201D; &#x8A5E; &#x201C;&#xFF08;&#x4F8B;&#x5982; <code>&#x201C;++&#x201D;</code>&#xFF09;&#xFF0C;&#x5426;&#x5247;&#x5C31;&#x53EA;&#x8FD4;&#x56DE;&#x81EA;&#x5DF1;&#x6210;&#x70BA;&#x55AE;&#x5B57;&#x5143; Token &#x3002;&#x73FE;&#x5728;&#x518D;&#x770B;&#x770B;&#x5982;&#x4F55;&#x8655;&#x7406; <code>&#x201C;/&#x201D;</code> &#x9019;&#x500B;&#x7279;&#x5225;&#x5B57;&#x5143;&#x3002;</p>
+<h2 id="slashstate">SLASH_STATE</h2>
+<p>&#x7B2C;&#x4E00;&#x6B65;&#x662F;&#x8981;&#x589E;&#x52A0;&#x4E00;&#x500B;&#x53EB;&#x505A; <code>SLASH_STATE</code> &#x7684;&#x72C0;&#x614B;&#x3002;</p>
+<pre><code class="lang-js">Scanner.SLASH_STATE = Scanner.IDENTIFIER_STATE + <span class="hljs-number">1</span>;
+</code></pre>
+<p>&#x7136;&#x5F8C;&#x5728; <code>START_STATE</code> &#x589E;&#x52A0;&#x4E00;&#x500B; case &#xFF0C;&#x9047;&#x5230; <code>&#x201C;/&#x201D;</code> &#x6642;&#x5C31;&#x8981;&#x8F49;&#x5230; <code>SLASH_STATE</code> &#x3002;</p>
+<pre><code class="lang-js"><span class="hljs-keyword">case</span> <span class="hljs-string">&quot;/&quot;</span>:
+    <span class="hljs-keyword">this</span>.state = Scanner.SLASH_STATE;
+    <span class="hljs-keyword">break</span>;
+</code></pre>
+<p>&#x6700;&#x5F8C;&#x5728; <code>SLASH_STATE</code> &#x8655;&#x7406;&#x4E09;&#x500B;&#x60C5;&#x6CC1;&#xFF0C; line comment &#x3001; block comment &#x53CA;&#x9664;&#x865F;&#x3002;</p>
+<pre><code class="lang-js"><span class="hljs-keyword">case</span> Scanner.SLASH_STATE:
+    <span class="hljs-keyword">var</span> d = <span class="hljs-keyword">this</span>.reader.nextChar();
+    <span class="hljs-keyword">if</span> (d == <span class="hljs-string">&quot;/&quot;</span>) {
+        <span class="hljs-comment">//line comment</span>
+        bufferStr = <span class="hljs-string">&quot;&quot;</span>;
+        <span class="hljs-comment">//reading 1 more char here can prevent the case that a // is followed by a line break char immediately</span>
+        d = <span class="hljs-keyword">this</span>.reader.nextChar();
+        <span class="hljs-keyword">if</span> (d != <span class="hljs-string">&quot;\r&quot;</span> &amp;&amp; d != <span class="hljs-string">&quot;\n&quot;</span>) {
+            <span class="hljs-keyword">while</span> (d != <span class="hljs-string">&quot;\r&quot;</span> &amp;&amp; d != <span class="hljs-string">&quot;\n&quot;</span>) {
+                bufferStr += d;
+                d = <span class="hljs-keyword">this</span>.reader.nextChar();
+            }
+            <span class="hljs-comment">//to retract the line break char</span>
+            <span class="hljs-keyword">this</span>.reader.retract();
+        }
+        <span class="hljs-keyword">this</span>.state = Scanner.START_STATE;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.LINECOMMENT_TOKEN, bufferStr);
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (d == <span class="hljs-string">&quot;*&quot;</span>) {
+        <span class="hljs-comment">//block comment</span>
+        bufferStr = <span class="hljs-string">&quot;&quot;</span>;
+        <span class="hljs-keyword">var</span> end = <span class="hljs-literal">false</span>;
+        <span class="hljs-keyword">while</span> (! end) {
+            d = <span class="hljs-keyword">this</span>.reader.nextChar();
+            <span class="hljs-keyword">if</span> (d != <span class="hljs-number">-1</span>) {
+                <span class="hljs-keyword">if</span> (d == <span class="hljs-string">&quot;\r&quot;</span> || d == <span class="hljs-string">&quot;\n&quot;</span>) {
+                    <span class="hljs-keyword">this</span>.currLine++;
+                }
+                <span class="hljs-keyword">if</span> (d == <span class="hljs-string">&quot;*&quot;</span>) {
+                    <span class="hljs-keyword">var</span> e = <span class="hljs-keyword">this</span>.reader.nextChar();
+                    <span class="hljs-keyword">if</span> (e == <span class="hljs-string">&quot;/&quot;</span>) {
+                        <span class="hljs-comment">//meet */</span>
+                        end = <span class="hljs-literal">true</span>;
+                    } <span class="hljs-keyword">else</span> {
+                        bufferStr += <span class="hljs-string">&quot;*&quot;</span> + e;
+                    }
+                } <span class="hljs-keyword">else</span> {
+                    bufferStr += d;
+                }
+            } <span class="hljs-keyword">else</span> {
+                end = <span class="hljs-literal">true</span>;
+            }
+        }
+        <span class="hljs-keyword">this</span>.state = Scanner.START_STATE;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.BLOCKCOMMENT_TOKEN, bufferStr);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.state = Scanner.START_STATE;
+        <span class="hljs-keyword">this</span>.reader.retract();
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.DIV_TOKEN);
+    }
+    <span class="hljs-keyword">break</span>;
+</code></pre>
+<p>&#x5927;&#x5BB6;&#x53EF;&#x4EE5;&#x7814;&#x7A76;&#x4E00;&#x4E0B; <code>SLASH_STATE</code> &#x7684; source code &#xFF0C;&#x4F46;&#x5176;&#x5BE6;&#x7576;&#x4E2D;&#x7684; logic &#x90FD;&#x4E0D;&#x592A;&#x56F0;&#x96E3;&#xFF0C;&#x5982;&#x679C;&#x4E0B;&#x4E00;&#x500B;&#x5B57;&#x5143;&#x662F; <code>&#x201C;*&#x201D;</code> &#x6216;&#x8005; <code>&#x201C;/&#x201D;</code> &#x7684;&#x8A71;&#x5C31;&#x4EE3;&#x8868;&#x5B83;&#x662F; comment &#xFF0C;&#x90A3;&#x5C31;&#x4E00;&#x76F4;&#x8B80;&#x5230; &#x201C;&#x5B8C;&#x7562;&#x201D; &#x70BA;&#x6B62;&#xFF0C;&#x5426;&#x5247;&#x5C31;&#x4EE3;&#x8868;&#x5B83;&#x53EA;&#x662F;&#x9664;&#x865F; <code>&#x201C;/&#x201D;</code> &#xFF0C; retract &#x4E4B;&#x5F8C;&#x5C31;&#x53EF;&#x4EE5;&#x8FD4;&#x56DE;&#x4E86;&#x3002;</p>
+<p>&#x70BA;&#x4EC0;&#x9EBC;&#x8655;&#x7406; <code>&#x201C;/&#x201D;</code> &#x6642;&#x8981;&#x7528;&#x4E00;&#x500B;&#x65B0;&#x7684;&#x72C0;&#x614B;&#x4F86;&#x8655;&#x7406;&#xFF0C;&#x5176;&#x4ED6;&#x5982; <code>&#x201C;+&#x201D;</code> &#x53C8;&#x4E0D;&#x7528;&#x5462;&#xFF1F;</p>
+<p>&#x5176;&#x5BE6;&#x7528;&#x4E0D;&#x7528;&#x53E6;&#x4E00;&#x500B;&#x72C0;&#x614B;&#x4F86;&#x8655;&#x7406;&#x90FD;&#x53EF;&#x4EE5;&#xFF0C;&#x6C92;&#x6709;&#x4E00;&#x500B;&#x5BA2;&#x89C0;&#x7684;&#x6A19;&#x6E96;&#xFF0C;&#x897F;&#x5091;&#x53EA;&#x80FD;&#x8AAA;&#x5169;&#x500B;&#x201D; &#x53EF;&#x80FD; &#x201C;&#x9700;&#x8981;&#x53E6;&#x958B;&#x72C0;&#x614B;&#x7684;&#x4F8B;&#x5B50;&#x3002;&#x7B2C;&#x4E00;&#x500B;&#x662F;&#x7576; logic &#x6BD4;&#x8F03;&#x9577;&#x7684;&#x6642;&#x5019;&#xFF0C;&#x5C31;&#x8981;&#x8003;&#x616E;&#x4F7F;&#x7528;&#x65B0;&#x7684;&#x72C0;&#x614B;&#xFF0C;&#x4EE5;&#x907F;&#x514D;&#x4EE3;&#x78BC;&#x592A;&#x904E;&#x6DF7;&#x4E82;&#x6216;&#x8005;&#x592A;&#x591A;&#x7E2E;&#x6392;&#xFF08;indentation&#xFF09;&#x3002;&#x7B2C;&#x4E8C;&#x500B;&#x60C5;&#x6CC1;&#x662F;&#xFF0C;&#x5982;&#x679C;&#x958B;&#x4E00;&#x500B;&#x65B0;&#x72C0;&#x614B;&#x53EF;&#x4EE5;&#x6E1B;&#x5C11;&#x4EE3;&#x78BC;&#x91CD;&#x8907;&#x7684;&#x8A71;&#x5C31;&#x8981;&#x958B;&#x4E86;&#xFF0C;&#x672C;&#x6559;&#x7A0B;&#x6C92;&#x6709;&#x9019;&#x7A2E;&#x60C5;&#x6CC1;&#xFF0C;&#x5927;&#x5BB6;&#x60F3;&#x77E5;&#x66F4;&#x591A;&#x7684;&#x8A71;&#x770B;&#x770B; Actionscript compiler &#x7684; Scanner &#x5427;&#xFF0C;&#x7576;&#x4E2D;&#x8655;&#x7406; exponent &#x5C31;&#x6703;&#x88AB;&#x6574;&#x6578;&#x548C;&#x5C0F;&#x6578; literal &#x91CD;&#x7528;&#x3002;</p>
+<h2 id="&#x932F;&#x8AA4;&#x532F;&#x5831;">&#x932F;&#x8AA4;&#x532F;&#x5831;</h2>
+<p>&#x505A;&#x5B8C;&#x4E86;&#x6C92;&#x6709;&#xFF1F;&#x7D30;&#x5FC3;&#x95B1;&#x8B80;&#x7684;&#x8A71;&#x5C31;&#x6703;&#x767C;&#x73FE;&#x9084;&#x6B20;&#x4E86; &#x201C;&amp;&#x201D; &#x548C; &#x201C;|&#x201D; &#x7684;&#x8655;&#x7406;&#xFF0C;&#x56E0;&#x70BA;&#x5B83;&#x5011;&#x90FD;&#x6709;&#x5225;&#x65BC;&#x4EE5;&#x4E0A;&#x60C5;&#x6CC1;&#x3002;&#x770B;&#x770B;&#x4EE5;&#x4E0B;&#x4EE3;&#x78BC;&#xFF1A;</p>
+<pre><code class="lang-js"><span class="hljs-keyword">case</span> <span class="hljs-string">&quot;&amp;&quot;</span>:
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.reader.nextChar() == <span class="hljs-string">&quot;&amp;&quot;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.AND_TOKEN);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.reader.retract();
+    }
+    <span class="hljs-keyword">break</span>;
+<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;|&quot;</span>:
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.reader.nextChar() == <span class="hljs-string">&quot;|&quot;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.OR_TOKEN);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.reader.retract();
+    }
+    <span class="hljs-keyword">break</span>;
+</code></pre>
+<p>&#x90A3;&#x5C31;&#x597D;&#x4E86;&#x55CE;&#xFF1F;&#x4E0D;&#xFF01;&#x5982;&#x679C;&#x9047;&#x4E0A;&#x4E00;&#x500B; <code>&#x201C;&amp;&#x201D;</code> &#x6216;&#x8005;&#x4E00;&#x500B; <code>&#x201C;|&#x201D;</code> &#x7684;&#x8A71;&#xFF0C;&#x5728; Wescript &#x4F86;&#x8AAA;&#x662F; syntax error &#xFF01;&#x90A3;&#x6709; syntax error &#x8981;&#x600E;&#x9EBC;&#x8FA6;&#xFF1F;&#x7576;&#x7136;&#x662F;&#x544A;&#x8A34;&#x7528;&#x5BB6;&#x5566;&#x3002;</p>
+<pre><code class="lang-js"><span class="hljs-keyword">case</span> <span class="hljs-string">&quot;&amp;&quot;</span>:
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.reader.nextChar() == <span class="hljs-string">&quot;&amp;&quot;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.AND_TOKEN);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.reader.retract();
+        Errors.push({
+            type: Errors.SYNTAX_ERROR,
+            msg: <span class="hljs-string">&quot;You have only one &amp;&quot;</span>,
+            line: <span class="hljs-keyword">this</span>.currLine
+        });
+    }
+    <span class="hljs-keyword">break</span>;
+<span class="hljs-keyword">case</span> <span class="hljs-string">&quot;|&quot;</span>:
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.reader.nextChar() == <span class="hljs-string">&quot;|&quot;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.makeToken(Token.tokens.OR_TOKEN);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">this</span>.reader.retract();
+        Errors.push({
+            type: Errors.SYNTAX_ERROR,
+            msg: <span class="hljs-string">&quot;You have only one |&quot;</span>,
+            line: <span class="hljs-keyword">this</span>.currLine
+        });
+    }
+    <span class="hljs-keyword">break</span>;
+</code></pre>
+<p>&#x5728;&#x6700;&#x5F8C;&#x5C31;&#x662F;&#x5728; Tester &#x4E2D; iterate &#x4E00;&#x4E0B;&#x6240;&#x6709;&#x932F;&#x8AA4;&#x4E26;&#x544A;&#x8A34;&#x7528;&#x5BB6;&#x4E86;&#x3002;&#x73FE;&#x5728;&#x770B;&#x770B;&#x904B;&#x884C;&#x7D50;&#x679C;&#x3002;</p>
+<p>&#x9019;&#x88E1;&#x6C92;&#x6709;&#x63D0;&#x53CA;&#x6578;&#x5B57;&#x8655;&#x7406;&#x90E8;&#x4EFD;&#xFF0C;&#x56E0;&#x70BA;&#x6578;&#x5B57;&#x7684;&#x8655;&#x7406;&#x65B9;&#x6CD5;&#x6C92;&#x6709;&#x4EC0;&#x9EBC;&#x7279;&#x5225;&#x4E4B;&#x8655;&#xFF0C;&#x53EA;&#x8981;&#x4E00;&#x76F4;&#x8B80;&#x9032;&#x4F86;&#x8B80;&#x5230;&#x6C92;&#x6709;&#x6578;&#x5B57;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#x3002;</p>
+<p>&#x4FEE;&#x6B63;&#xFF1A;&#x7DB2;&#x53CB;&#x6307;&#x51FA;&#x5982;&#x679C;&#x7A0B;&#x5F0F;&#x672B;&#x7AEF;&#x4E0D;&#x662F;&#x7A7A;&#x767D;&#x7684;&#x8A71;&#x6703;&#x51FA;&#x73FE;&#x7121;&#x9650;&#x5FAA;&#x74B0;&#xFF0C;&#x539F;&#x56E0;&#x662F;&#x7576;&#x7A0B;&#x5F0F;&#x8A9E;&#x6CD5;&#x5728;&#x7A0B;&#x5F0F;&#x7684;&#x672B;&#x7AEF;&#x51FA;&#x932F;&#x6642;&#xFF0C; retract &#x6703;&#x628A; reader &#x9000;&#x5230;&#x4E0A;&#x4E00;&#x500B;&#x5B57;&#x5143;&#xFF0C;&#x6C38;&#x9060;&#x505C;&#x4E0D;&#x4E86;&#xFF01;</p>
+<p>&#x89E3;&#x6C7A;&#x65B9;&#x6CD5;&#x6709;&#x4E8C;&#xFF1A;&#x4E00;&#x3001;&#x6BCF;&#x6B21;&#x7DE8;&#x8B6F;&#x524D;&#x90FD;&#x5728;&#x7A0B;&#x5F0F;&#x524D;&#x5F8C;&#x52A0;&#x4E00;&#x500B;&#x7A7A;&#x767D;&#x5B57;&#x5143;&#xFF1B;&#x4E8C;&#x3001;&#x5728; retract &#x6642;&#x6AA2;&#x67E5;&#x7A0B;&#x5F0F;&#x5230;&#x4E86;&#x672B;&#x7AEF;&#x6C92;&#x6709;&#xFF0C;&#x5230;&#x4E86;&#x5C31;&#x4E0D;&#x80FD;&#x518D; retract &#xFF0C;&#x73FE;&#x63D0;&#x4F9B;&#x4FEE;&#x6B63;&#x6A94;&#x6848;&#xFF01;&#x611F;&#x8B1D;&#x7DB2;&#x53CB; &#x201D;KJlmfe&#x201D; &#x6307;&#x51FA;&#x554F;&#x984C;&#x3002;</p>
+<p>&#x5927;&#x529F;&#x544A;&#x6210;&#xFF01; Scanner &#x7D42;&#x65BC;&#x5BEB;&#x597D;&#x4E86;&#xFF0C;&#x611F;&#x53D7;&#x5230; FSM &#x5E36;&#x4F86;&#x7684;&#x597D;&#x8655;&#x4E86;&#x6C92;&#x6709;&#xFF1F;&#x4F7F;&#x7528; FSM &#x6A21;&#x5F0F;&#x4F86;&#x958B;&#x767C;&#xFF0C;&#x4EE3;&#x78BC;&#x7C21;&#x55AE;&#x6613;&#x660E;&#xFF0C;&#x4EA6;&#x5F88; scalable &#xFF0C;&#x8981;&#x96A8;&#x6642;&#x52A0;&#x591A;&#x5169;&#x7A2E; Token &#x90FD;&#x53EF;&#x4EE5;&#x3002;&#x73FE;&#x5728;&#x5927;&#x5BB6;&#x4E5F;&#x53EF;&#x4EE5;&#x8A66;&#x8A66;&#x81EA;&#x5DF1;&#x958B;&#x767C;&#x4E00;&#x500B; Scanner &#xFF0C;&#x5275;&#x9020;&#x4E00;&#x7A2E;&#x5C6C;&#x65BC;&#x4F60;&#x81EA;&#x5DF1;&#x7684;&#x8A9E;&#x8A00;&#x5566;&#xFF08;&#x5176;&#x5BE6;&#x9084;&#x6709;&#x5F88;&#x9577;&#x7684;&#x4E00;&#x6BB5;&#x8DEF;&#x2026;&#x2026;&#xFF09;&#xFF01;&#x4E0B;&#x9031;&#x6703;&#x958B;&#x59CB;&#x5BEB; Parser&#xFF0C;&#x5927;&#x5BB6;&#x8A18;&#x5F97;&#x5148;&#x8B80;&#x719F;&#x9019;&#x7AE0;&#x7684; Scanner &#x554A;&#xFF01;</p>
+<p>&#x4E0B;&#x5468;&#x540C;&#x6A23;&#x6642;&#x9593;&#xFF0C;&#x518D;&#x898B;&#xFF01;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="2-1.html" class="navigation navigation-prev " aria-label="Previous page: 掃瞄器（Scanner）﹣詞法分析（Lexical analysis）（上）">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="3-1.html" class="navigation navigation-next " aria-label="Next page: 語法分析器（Parser）﹣語法分析（Syntactic analysis）（上）">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"掃瞄器（Scanner）﹣詞法分析（Lexical analysis）（下）","level":"1.4","depth":1,"next":{"title":"語法分析器（Parser）﹣語法分析（Syntactic analysis）（上）","level":"1.5","depth":1,"path":"3-1.md","ref":"3-1.md","articles":[]},"previous":{"title":"掃瞄器（Scanner）﹣詞法分析（Lexical analysis）（上）","level":"1.3","depth":1,"path":"2-1.md","ref":"2-1.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"2-2.md","mtime":"2019-08-22T10:19:54.291Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-08-23T07:41:59.848Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

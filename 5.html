@@ -1,0 +1,639 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>虛擬機（Virtual Machine） · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="6-1.html" />
+    
+    
+    <link rel="prev" href="4.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    前言
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="1.html">
+            
+                <a href="1.html">
+            
+                    
+                    簡介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="2-1.html">
+            
+                <a href="2-1.html">
+            
+                    
+                    掃瞄器（Scanner）﹣詞法分析（Lexical analysis）（上）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="2-2.html">
+            
+                <a href="2-2.html">
+            
+                    
+                    掃瞄器（Scanner）﹣詞法分析（Lexical analysis）（下）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="3-1.html">
+            
+                <a href="3-1.html">
+            
+                    
+                    語法分析器（Parser）﹣語法分析（Syntactic analysis）（上）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="3-2.html">
+            
+                <a href="3-2.html">
+            
+                    
+                    語法分析器（Parser）﹣語法分析（Syntactic analysis）（中）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="3-3.html">
+            
+                <a href="3-3.html">
+            
+                    
+                    語法分析器（Parser）﹣語法分析（Syntactic analysis）（下）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="4.html">
+            
+                <a href="4.html">
+            
+                    
+                    語意分析（Semantic analysis）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.9" data-path="5.html">
+            
+                <a href="5.html">
+            
+                    
+                    虛擬機（Virtual Machine）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.10" data-path="6-1.html">
+            
+                <a href="6-1.html">
+            
+                    
+                    編譯器（Compiler）﹣生成代碼（Code Generation）（上）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.11" data-path="6-2.html">
+            
+                <a href="6-2.html">
+            
+                    
+                    編譯器（Compiler）﹣生成代碼（Code Generation）（下）
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.12" data-path="7.html">
+            
+                <a href="7.html">
+            
+                    
+                    優化器（Optimizer）﹣還可以更好
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >虛擬機（Virtual Machine）</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x4E94;&#x3001;&#x865B;&#x64EC;&#x6A5F;&#xFF08;virtual-machine&#xFF09;">&#x4E94;&#x3001;&#x865B;&#x64EC;&#x6A5F;&#xFF08;Virtual Machine&#xFF09;</h1>
+<p>&#x70BA;&#x4EC0;&#x9EBC;&#x6211;&#x5011;&#x9700;&#x8981;&#x865B;&#x64EC;&#x6A5F;&#x5462;&#xFF1F;&#x56E0;&#x70BA;&#x6211;&#x5011;&#x8981;&#x904B;&#x884C;&#x6211;&#x5011;&#x7DE8;&#x8B6F;&#x597D;&#x7684;&#x7A0B;&#x5F0F;&#x3002;&#x90A3;&#x70BA;&#x4EC0;&#x9EBC;&#x6211;&#x5011;&#x4E0D;&#x76F4;&#x63A5;&#x7DE8;&#x8B6F;&#x5230; native binary code &#x5462;&#xFF1F;&#x9019;&#x662F;&#x56E0;&#x70BA;&#x771F;&#x6B63;&#x7684;&#x96FB;&#x8166;&#x8CC7;&#x6E90;&#x5341;&#x5206;&#x6709;&#x9650;&#xFF0C;&#x6211;&#x5011;&#x7DE8;&#x5BEB;&#x8D77;&#x4E0A;&#x4F86;&#x6703;&#x6BD4;&#x7528;&#x865B;&#x64EC;&#x6A5F;&#x7684;&#x505A;&#x6CD5;&#x96E3;&#x5F88;&#x591A;&#xFF0C;&#x90A3;&#x5C31;&#x56B4;&#x91CD;&#x8D85;&#x51FA;&#x4E86;&#x672C;&#x6559;&#x7A0B;&#x7684;&#x7BC4;&#x570D;&#x4E86;&#xFF08;&#x5176;&#x5BE6;&#x662F;&#x56E0;&#x70BA;&#x897F;&#x5091;&#x9084;&#x4E0D;&#x592A;&#x8A8D;&#x8B58;&#x9019;&#x500B;&#x8AB2;&#x984C;&#xFF0C;&#x8981;&#x5077;&#x61F6;&#x4E00;&#x4E0B;&#xFF09;&#x3002;&#x7576;&#x7136;&#xFF0C;&#x865B;&#x64EC;&#x6A5F;&#x7684;&#x505A;&#x6CD5;&#x548C; native code &#x7684;&#x4E5F;&#x6709;&#x5E7E;&#x5206;&#x76F8;&#x4F3C;&#xFF0C;&#x9019;&#x88E1;&#x5C31;&#x7D66;&#x8B80;&#x8005;&#x5011;&#x4E00;&#x500B;&#x521D;&#x6B65;&#x7684;&#x6982;&#x5FF5;&#xFF0C;&#x5927;&#x5BB6;&#x771F;&#x7684;&#x60F3;&#x518D;&#x63A5;&#x89F8;&#x591A;&#x4E00;&#x9EDE;&#x5E95;&#x5C64;&#x7684;&#x6771;&#x897F;&#x5C31;&#x8981;&#x81EA;&#x5DF1;&#x6478;&#x7D22;&#x4E00;&#x4E0B;&#x4E86;&#x2026;&#x2026;</p>
+<p>&#x63A5;&#x8457;&#x4E0B;&#x4F86;&#xFF0C;&#x6211;&#x5011;&#x5C31;&#x7A31;&#x6211;&#x5011;&#x7684;&#x865B;&#x64EC;&#x6A5F;&#x70BA; Wemachine &#x5427;&#x3002;</p>
+<p>&#x904A;&#x6232;&#x958B;&#x59CB;&#x4E4B;&#x524D;&#xFF0C;&#x6211;&#x5011;&#x7576;&#x7136;&#x8981;&#x5148;&#x5B9A;&#x7FA9;&#x4E00;&#x4E0B;&#x904A;&#x6232;&#x898F;&#x5247;&#xFE63; Instruction set architecture&#xFF08;ISA&#xFF09;&#xFF0C;Wemachine &#x6703;&#x652F;&#x6301;&#x4EE5;&#x4E0B;&#x7684; Instruction set&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th>Instruction</th>
+<th>Example</th>
+<th>Meaning</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arithmetic</td>
+</tr>
+<tr>
+<td>add</td>
+<td>add $1,$2,$3</td>
+<td>$1 = $2 + $3</td>
+<td></td>
+</tr>
+<tr>
+<td>subtract</td>
+<td>sub $1,$2,$3</td>
+<td>$1 = $2 &#x2013; $3</td>
+<td></td>
+</tr>
+<tr>
+<td>mult</td>
+<td>mult $1,$2,$3</td>
+<td>$1 = $2 * $3</td>
+<td></td>
+</tr>
+<tr>
+<td>div</td>
+<td>div $1,$2,$3</td>
+<td>$1 = $2 / $3</td>
+<td></td>
+</tr>
+<tr>
+<td>modulo</td>
+<td>mod $1,$2,$3</td>
+<td>$1 = $2 % $3</td>
+<td></td>
+</tr>
+<tr>
+<td>add immediate</td>
+<td>addi $1,$2,100</td>
+<td>$1 = $2 + 100</td>
+<td></td>
+</tr>
+<tr>
+<td>subtract immediate</td>
+<td>subi $1,$2,100</td>
+<td>$1 = $2 &#x2013; 100</td>
+<td></td>
+</tr>
+<tr>
+<td>multiply immediate</td>
+<td>multi $1,$2,100</td>
+<td>$1 = $2 * 100</td>
+<td></td>
+</tr>
+<tr>
+<td>divide immediate</td>
+<td>divi $1,$2,100</td>
+<td>$1 = $2 / 100</td>
+<td></td>
+</tr>
+<tr>
+<td>modulo immediate</td>
+<td>modi $1,$2,100</td>
+<td>$1 = $2 % 100</td>
+<td></td>
+</tr>
+<tr>
+<td>Logical</td>
+</tr>
+<tr>
+<td>and</td>
+<td>and $1,$2,$3</td>
+<td>$1 = $2 &amp; $3</td>
+<td>Logical AND</td>
+</tr>
+<tr>
+<td>or</td>
+<td>or $1,$2,$3</td>
+<td>$1 = $2</td>
+<td>$3</td>
+<td>Logical OR</td>
+</tr>
+<tr>
+<td>Data transfer</td>
+</tr>
+<tr>
+<td>move data from register to another register</td>
+<td>move $1,$2</td>
+<td>$1 = $2</td>
+<td></td>
+</tr>
+<tr>
+<td>load data</td>
+<td>lwi $1,100</td>
+<td>$1 = 100</td>
+<td></td>
+</tr>
+<tr>
+<td>load upper immediate</td>
+<td>lui $1,100</td>
+<td>$1 = 100 * 2^16</td>
+<td></td>
+</tr>
+<tr>
+<td>Conditional branch</td>
+</tr>
+<tr>
+<td>define LABEL</td>
+<td>label LABEL</td>
+<td>LABEL:</td>
+<td></td>
+</tr>
+<tr>
+<td>branch on equal</td>
+<td>beq $1,$2,LABEL</td>
+<td>if ($1 == $2) goto LABEL</td>
+<td></td>
+</tr>
+<tr>
+<td>branch on not equal</td>
+<td>bne $1,$2,LABEL</td>
+<td>if ($1 != $2) goto LABEL</td>
+<td></td>
+</tr>
+<tr>
+<td>branch on less than</td>
+<td>bl $1,$2,LABEL</td>
+<td>if ($1 &lt; $2) goto LABEL</td>
+<td></td>
+</tr>
+<tr>
+<td>branch on greater than</td>
+<td>bg $1,$2,LABEL</td>
+<td>if ($1 &gt; $2) goto LABEL</td>
+<td></td>
+</tr>
+<tr>
+<td>branch on less than or equal</td>
+<td>ble $1,$2,LABEL</td>
+<td>if ($1 &lt;= $2) goto LABEL</td>
+<td></td>
+</tr>
+<tr>
+<td>branch on greater than or equal</td>
+<td>bge $1,$2,LABEL</td>
+<td>if ($1 &gt;= $2) goto LABEL</td>
+<td></td>
+</tr>
+<tr>
+<td>Unconditional jump</td>
+</tr>
+<tr>
+<td>jump</td>
+<td>j LABEL</td>
+<td>goto LABEL</td>
+<td></td>
+</tr>
+<tr>
+<td>Others</td>
+</tr>
+<tr>
+<td>print</td>
+<td>print $1</td>
+<td>print $1</td>
+</tr>
+</tbody>
+</table>
+<p>&#x800C;&#x4E14;&#x897F;&#x5091;&#x5C07;&#x6703;&#x5047;&#x8A2D;&#x6211;&#x5011;&#x7684;&#x865B;&#x64EC;&#x6A5F;&#x6709;&#x7121;&#x9650;&#x500B; register &#xFF0C;&#x4EE5;&#x4FBF;&#x6211;&#x5011;&#x958B;&#x767C;&#x3002;</p>
+<p>&#x958B;&#x59CB;&#x5BEB;&#x7A0B;&#x5F0F;&#x4E86;&#xFF0C;&#x7B2C;&#x4E00;&#x6B65;&#x6211;&#x5011;&#x8981;&#x505A;&#x7684;&#x662F;&#x8B93; Wemachine &#x5B78;&#x6703;&#x8B80;&#x90A3;&#x5806;&#x6307;&#x4EE4;&#xFF0C;&#x70BA;&#x4E86;&#x65B9;&#x4FBF;&#x8B80;&#x53D6;&#xFF0C;&#x6211;&#x5011;&#x8981;&#x9650;&#x5B9A;&#x6307;&#x4EE4;&#x7684;&#x683C;&#x5F0F;&#xFF0C;&#x683C;&#x5F0F;&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre><code>opcode1 operand1, operand2, operand3;
+
+opcode2 operand1, operand2;
+</code></pre><p>&#x6BCF;&#x500B;&#x6307;&#x4EE4;&#x7531;&#x5206;&#x865F;&#x5206;&#x9694;&#x958B;&#xFF0C;&#x5728;&#x7B2C;&#x4E00;&#x500B;&#x7A7A;&#x683C;&#x865F;&#x524D;&#x7684;&#x70BA;&#x6307;&#x4EE4;&#x7684; opcode &#xFF0C;&#x63A5;&#x4E0B;&#x4F86;&#x662F;&#x4E00;&#x81F3;&#x4E09;&#x500B; operand &#xFF0C;&#x4EE5;&#x9017;&#x865F;&#x5206;&#x9694;&#x958B;&#xFF0C;&#x5C31;&#x662F;&#x9019;&#x9EBC;&#x7C21;&#x55AE;&#x4E86;&#x3002;&#x73FE;&#x5728;&#x5148;&#x958B;&#x59CB;&#x5BEB;&#x4E00;&#x500B; Parser &#x4F86;&#x5206;&#x6790;&#x4EE5;&#x6B64;&#x683C;&#x5F0F;&#x5BEB;&#x7684;&#x7A0B;&#x5F0F;&#xFF0C;&#x897F;&#x5091;&#x76F8;&#x4FE1;&#x9019;&#x4E00;&#x6B65;&#x61C9;&#x8A72;&#x5F88;&#x7C21;&#x55AE;&#xFF0C;&#x73FE;&#x5728;&#x770B;&#x770B;&#x904B;&#x884C;&#x7D50;&#x679C;&#x3002;</p>
+<p><img src="images/5-1.png" alt=""></p>
+<p>&#x73FE;&#x5728;&#x8981;&#x958B;&#x59CB;&#x5BE6;&#x73FE;&#x529F;&#x80FD;&#x4E86;&#xFF0C;&#x9996;&#x5148;&#x8981;&#x6709; register &#x4EE5;&#x8A18;&#x4E0B;&#x6578;&#x64DA;&#xFF0C;&#x9019;&#x500B;&#x897F;&#x5091;&#x6703;&#x7528;&#x4E00;&#x500B; array &#x4F86;&#x505A;&#xFF0C;$0 &#x6307;&#x5411; array &#x7B2C; 0 &#x500B;&#x5143;&#x7D20;&#xFF0C;$1 &#x6307;&#x5411;&#x7B2C; 1 &#x500B;&#x5143;&#x7D20;&#xFF0C;&#x5982;&#x6B64;&#x985E;&#x63A8;&#x3002;&#x7136;&#x5F8C;&#x6211;&#x5011;&#x8981;&#x5BEB;&#x5169;&#x500B; method &#x4F86; get set register &#x7684;&#x6578;&#x64DA;&#xFF0C;&#x5982;&#x679C;&#x90A3;&#x500B; register &#x672A;&#x88AB;&#x4F7F;&#x7528;&#x904E;&#x7684;&#x8A71;&#xFF0C;&#x5B83;&#x7684;&#x6578;&#x64DA;&#x5C31;&#x6703;&#x662F; 0&#x3002;&#x65BC;&#x662F;&#x6211;&#x5011;&#x5C31;&#x6709;&#x4E86;&#x4EE5;&#x4E0B;&#x7684;&#x7A0B;&#x5F0F;&#xFF1A;</p>
+<pre><code class="lang-js">Wemachine.prototype.resolveRegister = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">operand</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> operand == <span class="hljs-string">&quot;string&quot;</span> &amp;&amp; operand.length &gt; <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">if</span> (operand[<span class="hljs-number">0</span>] == <span class="hljs-string">&quot;$&quot;</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseInt</span>(operand.substr(<span class="hljs-number">1</span>));
+        }
+    }
+    Errors.push({
+        type: Errors.RUNTIME_ERROR,
+        msg: <span class="hljs-string">&quot;Fail to resolve register&quot;</span>,
+        line: <span class="hljs-number">0</span>
+    });
+    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+}
+Wemachine.prototype.getRegisterContent = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">operand</span>) </span>{
+    operand = <span class="hljs-keyword">this</span>.resolveRegister(operand);
+    <span class="hljs-keyword">if</span> (operand != <span class="hljs-number">-1</span>) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.registers.length &gt; operand) {
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.registers[operand];
+        }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+Wemachine.prototype.setRegisterContent = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">operand, value</span>) </span>{
+    operand = <span class="hljs-keyword">this</span>.resolveRegister(operand);
+    <span class="hljs-keyword">if</span> (operand != <span class="hljs-number">-1</span>) {
+        <span class="hljs-keyword">this</span>.registers[operand] = value;
+    }
+}
+</code></pre>
+<p>&#x73FE;&#x5728;&#x958B;&#x59CB;&#x8981;&#x7DE8;&#x5BEB;&#x57F7;&#x884C;&#x529F;&#x80FD;&#xFF0C;&#x57F7;&#x884C;&#x529F;&#x80FD;&#x5F88;&#x7C21;&#x55AE;&#xFF0C;&#x53EA;&#x662F;&#x628A;&#x6BCF;&#x4E00;&#x53E5;&#x6307;&#x4EE4;&#x90FD;&#x57F7;&#x884C;&#x4E00;&#x6B21;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#x3002;</p>
+<pre><code class="lang-js">Wemachine.prototype.run = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>, l = <span class="hljs-keyword">this</span>.instructions.length; i &lt; l; i++) {
+        <span class="hljs-keyword">var</span> instruction = <span class="hljs-keyword">this</span>.instructions[i];
+        <span class="hljs-keyword">this</span>[instruction.opcode].apply(<span class="hljs-keyword">this</span>, instruction.operands);
+    }
+}
+</code></pre>
+<p>&#x6700;&#x5F8C;&#x5C31;&#x662F;&#x8981;&#x7DE8;&#x5BEB;&#x6307;&#x4EE4;&#x7684;&#x5BE6;&#x969B;&#x529F;&#x80FD;&#x4E86;&#xFF0C;lwi &#x8981;&#x505A;&#x7684;&#x5C31;&#x662F;&#x76F4;&#x63A5;&#x628A;&#x4E00;&#x500B;&#x6578;&#x503C;&#x5BEB;&#x5230; register &#x4E2D;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x5011;&#x53EA;&#x9700; call &#x4E00;&#x4E0B; <code>setRegisterContent</code> &#x5C31;&#x53EF;&#x4EE5;&#x4E86;&#xFF0C;&#x800C; print &#x8981;&#x505A;&#x7684;&#x5C31;&#x662F;&#x628A;&#x4E00;&#x500B; register &#x4E2D;&#x7684;&#x6578;&#x503C;&#x5BEB;&#x5230; output &#x53BB;&#xFF0C;&#x6240;&#x4EE5;&#x5C31;&#x6709;&#x4EE5;&#x4E0B;&#x7684;&#x4EE3;&#x78BC;&#x4E86;&#xFF1A;</p>
+<pre><code class="lang-js">Wemachine.prototype.lwi = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">operand1, operand2</span>) </span>{
+    <span class="hljs-keyword">this</span>.setRegisterContent(operand1, <span class="hljs-built_in">parseInt</span>(operand2));
+}
+Wemachine.prototype.print = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">operand1</span>) </span>{
+    <span class="hljs-keyword">var</span> val = <span class="hljs-keyword">this</span>.getRegisterContent(operand1);
+    log(val);
+}
+</code></pre>
+<p>&#x653E;&#x5728;&#x4E00;&#x8D77;&#xFF0C;&#x6211;&#x5011;&#x904B;&#x884C;&#x4E00;&#x4E0B;&#x7A0B;&#x5F0F;&#xFF0C;&#x770B;&#x770B;&#x7D50;&#x679C;&#x3002;</p>
+<p>&#x5F88;&#x597D;&#xFF0C;&#x73FE;&#x5728;&#x5C31;&#x628A;&#x9918;&#x4E0B;&#x7684; Data transfer &#x529F;&#x80FD;&#x90FD;&#x7DE8;&#x5BEB;&#x4E0B;&#x4F86;&#x5427;&#x3002;</p>
+<pre><code class="lang-js">Wemachine.prototype.move = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">operand1, operand2</span>) </span>{
+    <span class="hljs-keyword">this</span>.setRegisterContent(operand1, <span class="hljs-keyword">this</span>.getRegisterContent(operand2));
+}
+Wemachine.prototype.lwi = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">operand1, operand2</span>) </span>{
+    <span class="hljs-keyword">this</span>.setRegisterContent(operand1, <span class="hljs-built_in">parseInt</span>(operand2));
+}
+Wemachine.prototype.lui = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">operand1, operand2</span>) </span>{
+    <span class="hljs-keyword">this</span>.setRegisterContent(operand1, <span class="hljs-built_in">parseInt</span>(operand2) &lt;&lt; <span class="hljs-number">16</span>);
+}
+</code></pre>
+<p>&#x5F88;&#x76F4;&#x89C0;&#xFF0C;&#x6C92;&#x4EC0;&#x9EBC;&#x7279;&#x5225;&#x4E4B;&#x8655;&#xFF0C;&#x9019;&#x88E1;&#x5C31;&#x4E0D;&#x591A;&#x89E3;&#x91CB;&#x4E86;&#x3002; Arithmetic &#x7684;&#x8655;&#x7406;&#x5176;&#x5BE6;&#x90FD;&#x5F88;&#x76F4;&#x89C0;&#xFF0C;&#x552F;&#x4E00;&#x9700;&#x8981;&#x63D0;&#x9192;&#x8B80;&#x8005;&#x7684;&#x5730;&#x65B9;&#x662F;&#xFF0C;&#x505A;&#x9664;&#x6578;&#x904B;&#x7B97;&#x662F;&#x6709;&#x53EF;&#x80FD;&#x6703;&#x51FA;&#x73FE; Division by zero &#x7684;&#x60C5;&#x6CC1;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x5011;&#x8981;&#x767C;&#x51FA; runtime error &#x3002;</p>
+<p>Logical &#x8DDF; Arithmetic &#x7684;&#x8655;&#x7406;&#x65B9;&#x6CD5;&#x5F88;&#x76F8;&#x4F3C;&#xFF0C;&#x9019;&#x88E1;&#x5C31;&#x4E0D;&#x8457;&#x58A8;&#x4E86;&#x3002;&#x73FE;&#x5728;&#x5230;&#x6700;&#x5F8C;&#x8981;&#x5BEB; <code>branch</code> &#x548C; <code>jump</code> &#x4E86;&#xFF0C;&#x8981;&#x5BE6;&#x73FE;&#x9019;&#x500B;&#x529F;&#x80FD;&#xFF0C;&#x6211;&#x5011;&#x8981;&#x6539;&#x8B8A;&#x4E00;&#x4E0B;&#x7A0B;&#x5F0F;&#x57F7;&#x884C;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x8A18;&#x5F97;&#x6211;&#x5011;&#x7684; <code>run</code> method &#x55CE;&#xFF1F;&#x6211;&#x5011;&#x7684; <code>run</code> method &#x662F;&#x7528; <code>i</code> &#x4F86;&#x505A; loop counter &#x7684;&#xFF0C;&#x73FE;&#x5728;&#x8981;&#x6539;&#x8B8A;&#x4E00;&#x4E0B;&#x4E86;&#xFF0C;&#x8981;&#x7528; program counter &#x53D6;&#x4EE3; i&#xFF0C;&#x9019;&#x6A23;&#x6211;&#x5011;&#x624D;&#x53EF;&#x4EE5;&#x5728;&#x5176;&#x4ED6;&#x65B9;&#x6CD5;&#x4E2D;&#x6539;&#x8B8A;&#x904B;&#x884C;&#x6B21;&#x5E8F;&#x3002;</p>
+<p>&#x5728; <code>label ()</code> &#x4E2D;&#xFF0C;&#x6211;&#x5011;&#x8981;&#x628A;&#x60F3;&#x5B9A;&#x7FA9;&#x7684; label &#x548C; program counter &#x7684;&#x6578;&#x503C;&#x653E;&#x5230; map &#x88E1;&#xFF0C;&#x9019;&#x6A23;&#x6211;&#x5011;&#x624D;&#x53EF;&#x4EE5;&#x5728;&#x5F8C;&#x9762;&#x7684;&#x7A0B;&#x5F0F;&#x8A2D;&#x5B9A;&#x8981;&#x8DF3;&#x5230;&#x54EA;&#x4E00;&#x500B;&#x4F4D;&#x7F6E;&#x3002;&#x73FE;&#x5728;&#x770B;&#x770B;&#x6211;&#x5011;&#x7684; bne &#xFF1A;</p>
+<pre><code class="lang-js">Wemachine.prototype.bne = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">operand1, operand2, operand3</span>) </span>{
+    <span class="hljs-keyword">var</span> nextPC = <span class="hljs-keyword">this</span>.labelMap[operand3];
+    <span class="hljs-keyword">if</span> (nextPC == <span class="hljs-literal">null</span>) {
+        Errors.push({
+            type: Errors.RUNTIME_ERROR,
+            msg: <span class="hljs-string">&quot;Label not found&quot;</span>,
+            line: <span class="hljs-number">0</span>
+        });
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">var</span> val1 = <span class="hljs-keyword">this</span>.getRegisterContent(operand1);
+        <span class="hljs-keyword">var</span> val2 = <span class="hljs-keyword">this</span>.getRegisterContent(operand2);
+        <span class="hljs-keyword">if</span> (val1 != val2) {
+            <span class="hljs-keyword">this</span>.pc = nextPC;
+        }
+    }
+}
+</code></pre>
+<p>&#x9996;&#x5148;&#x8981;&#x5728; map &#x4E2D;&#x627E;&#x627E;&#x6709;&#x6C92;&#x6709;&#x76F8;&#x95DC;&#x7684; label &#xFF0C;&#x6C92;&#x6709;&#x7684;&#x8A71;&#x5C31;&#x8981;&#x767C;&#x51FA;&#x932F;&#x8AA4;&#xFF0C;&#x6709;&#x7684;&#x8A71;&#x5C31;&#x8981;&#x770B;&#x770B;&#x689D;&#x4EF6;&#x662F;&#x5426;&#x6210;&#x7ACB;&#xFF0C;&#x662F;&#x7684;&#x8A71;&#x5C31;&#x8981;&#x628A; program counter &#x8A2D;&#x5B9A;&#x70BA;&#x8981;&#x8DF3;&#x5230;&#x7684;&#x4F4D;&#x7F6E;&#xFF0C;&#x9019;&#x6A23;&#x7A0B;&#x5F0F;&#x5728;&#x4E0B;&#x6B21; loop &#x7684;&#x6642;&#x5019;&#x624D;&#x53EF;&#x4EE5;&#x8DF3;&#x5230; label &#x90A3;&#x8655;&#x3002;&#x73FE;&#x5728;&#x770B;&#x770B;&#x7A0B;&#x5F0F;&#x904B;&#x884C;&#x7D50;&#x679C;&#x5427;&#xFF01;</p>
+<p>&#x73FE;&#x5728;&#x628A;&#x5269;&#x4E0B;&#x4F86;&#x7684; <code>branch</code> &#x90FD;&#x5BEB;&#x4E0B;&#x4F86;&#x3002;</p>
+<p>&#x5927;&#x529F;&#x544A;&#x6210;&#xFF0C;&#x600E;&#x9EBC;&#x6A23;&#xFF0C;&#x5982;&#x897F;&#x5091;&#x4E4B;&#x524D;&#x6240;&#x8AAA;&#xFF0C;&#x9019;&#x90E8;&#x4EFD;&#x4E0D;&#x662F;&#x5F88;&#x96E3;&#x5427;&#xFF0C;&#x5982;&#x679C;&#x5927;&#x5BB6;&#x66FE;&#x7D93;&#x5B78;&#x904E; assembly language &#x7684;&#x8A71;&#x61C9;&#x8A72;&#x66F4;&#x5BB9;&#x6613;&#x4E0A;&#x624B;&#xFF01;&#x73FE;&#x5728;&#x6709;&#x4E86;&#x9019;&#x500B;&#x7C21;&#x55AE;&#x7684;&#x865B;&#x64EC;&#x6A5F;&#xFF0C;&#x4E0B;&#x4E00;&#x6B65;&#x6211;&#x5011;&#x5C31;&#x53EF;&#x4EE5;&#x628A;&#x4E4B;&#x524D;&#x5EFA;&#x7ACB;&#x7684; parse tree &#x8B8A;&#x6210;&#x53EF;&#x4EE5;&#x5728;&#x9019;&#x500B; Wemachine &#x904B;&#x884C;&#x7684;&#x4EE3;&#x78BC;&#x4E86;&#xFF0C;&#x4E0B;&#x500B;&#x661F;&#x671F;&#x518D;&#x898B;&#x5427;&#x3002;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="4.html" class="navigation navigation-prev " aria-label="Previous page: 語意分析（Semantic analysis）">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="6-1.html" class="navigation navigation-next " aria-label="Next page: 編譯器（Compiler）﹣生成代碼（Code Generation）（上）">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"虛擬機（Virtual Machine）","level":"1.9","depth":1,"next":{"title":"編譯器（Compiler）﹣生成代碼（Code Generation）（上）","level":"1.10","depth":1,"path":"6-1.md","ref":"6-1.md","articles":[]},"previous":{"title":"語意分析（Semantic analysis）","level":"1.8","depth":1,"path":"4.md","ref":"4.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"5.md","mtime":"2019-08-23T06:54:34.620Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-08-23T07:41:59.848Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
