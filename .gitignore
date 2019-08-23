@@ -1,3 +1,4 @@
 _book/
 build/
 public/
+node_modules/

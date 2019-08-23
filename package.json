@@ -1,0 +1,9 @@
+{
+  "repository": "git@github.com:jaceju/simple-compiler.git",
+  "author": "jaceju <jaceju@kkbox.com>",
+  "private": true,
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "1.18.2"
+  }
+}
