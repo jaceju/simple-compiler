@@ -29,6 +29,18 @@ class Scanner {
             this.state = Scanner.IDENTIFIER_STATE;
             // we need to remember what the token's text is
             bufferStr = c;
+          } else if (c >= "0" && c <= "9") {
+            bufferStr = c;
+            let d;
+            while (true) {
+              d = this.reader.nextChar();
+              if (d >= "0" && d <= "9") {
+                bufferStr += d;
+              } else {
+                this.reader.retract();
+                return this.makeToken(Token.tokens.INTLITERAL_TOKEN, bufferStr);
+              }
+            }
           } else {
             switch (c) {
               case ":":
@@ -45,16 +57,11 @@ class Scanner {
                 return this.makeToken(Token.tokens.RIGHTBRACE_TOKEN);
               case "%":
                 return this.makeToken(Token.tokens.MOD_TOKEN);
-              case -1:
-                return this.makeToken(Token.tokens.EOS_TOKEN);
-              case "\r":
-              case "\n":
-                this.currLine++;
-                break;
               case "!":
                 if (this.reader.nextChar() === "=") {
                   return this.makeToken(Token.tokens.NOTEQUAL_TOKEN);
                 } else {
+                  // we have consumed one more char in if-condition
                   this.reader.retract();
                   return this.makeToken(Token.tokens.NOT_TOKEN);
                 }
@@ -128,6 +135,14 @@ class Scanner {
                   });
                 }
                 break;
+              case -1:
+                return this.makeToken(Token.tokens.EOS_TOKEN);
+              case "\r":
+              case "\n":
+                this.currLine++;
+                break;
+              default:
+              // ignore them
             }
           }
           break;

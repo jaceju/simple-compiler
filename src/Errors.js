@@ -17,5 +17,6 @@ class Errors {
 }
 
 Errors.SYNTAX_ERROR = 0;
+Errors.type = ["Syntax error"];
 
 module.exports = Errors;

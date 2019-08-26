@@ -6,6 +6,7 @@ class Token {
   constructor(type, text) {
     this.type = type;
     this.text = text;
+    this.consumed = false;
   }
 }
 
@@ -19,14 +20,17 @@ Token.tokens.RIGHTPAREN_TOKEN = Token.tokens.LEFTPAREN_TOKEN + 1;
 Token.tokens.LEFTBRACE_TOKEN = Token.tokens.RIGHTPAREN_TOKEN + 1;
 Token.tokens.RIGHTBRACE_TOKEN = Token.tokens.LEFTBRACE_TOKEN + 1;
 Token.tokens.MOD_TOKEN = Token.tokens.RIGHTBRACE_TOKEN + 1;
+
 Token.tokens.VAR_TOKEN = Token.tokens.MOD_TOKEN + 1;
 Token.tokens.TYPE_TOKEN = Token.tokens.VAR_TOKEN + 1;
 Token.tokens.BOOLLITERAL_TOKEN = Token.tokens.TYPE_TOKEN + 1;
-Token.tokens.IF_TOKEN = Token.tokens.BOOLLITERAL_TOKEN + 1;
+Token.tokens.INTLITERAL_TOKEN = Token.tokens.BOOLLITERAL_TOKEN + 1;
+Token.tokens.IF_TOKEN = Token.tokens.INTLITERAL_TOKEN + 1;
 Token.tokens.ELSE_TOKEN = Token.tokens.IF_TOKEN + 1;
 Token.tokens.WHILE_TOKEN = Token.tokens.ELSE_TOKEN + 1;
 Token.tokens.PRINT_TOKEN = Token.tokens.WHILE_TOKEN + 1;
 Token.tokens.IDENTIFIER_TOKEN = Token.tokens.PRINT_TOKEN + 1;
+
 Token.tokens.PLUS_TOKEN = Token.tokens.IDENTIFIER_TOKEN + 1;
 Token.tokens.PLUSPLUS_TOKEN = Token.tokens.PLUS_TOKEN + 1;
 Token.tokens.PLUSASSIGN_TOKEN = Token.tokens.PLUSPLUS_TOKEN + 1;
@@ -45,8 +49,10 @@ Token.tokens.LESSEQUAL_TOKEN = Token.tokens.LESS_TOKEN + 1;
 Token.tokens.AND_TOKEN = Token.tokens.LESSEQUAL_TOKEN + 1;
 Token.tokens.OR_TOKEN = Token.tokens.AND_TOKEN + 1;
 Token.tokens.NOT_TOKEN = Token.tokens.OR_TOKEN + 1;
+
 Token.tokens.LINECOMMENT_TOKEN = Token.tokens.NOT_TOKEN + 1;
 Token.tokens.BLOCKCOMMENT_TOKEN = Token.tokens.LINECOMMENT_TOKEN + 1;
+
 Token.backwardMap = {}; // for inverse look-up
 
 for (let x in Token.tokens) {
