@@ -52,6 +52,7 @@ Token.tokens.NOT_TOKEN = Token.tokens.OR_TOKEN + 1;
 
 Token.tokens.LINECOMMENT_TOKEN = Token.tokens.NOT_TOKEN + 1;
 Token.tokens.BLOCKCOMMENT_TOKEN = Token.tokens.LINECOMMENT_TOKEN + 1;
+Token.tokens.NEWLINE_TOKEN = Token.tokens.BLOCKCOMMENT_TOKEN + 1;
 
 Token.backwardMap = {}; // for inverse look-up
 
