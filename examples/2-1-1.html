@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scanner - section 1</title>
+
+    <style type="text/css">
+      #wescriptSrc {
+        margin: 10px 0;
+      }
+
+      #wescriptSrc .content {
+        border: 1px solid orange;
+        padding: 10px;
+      }
+    </style>
+
+    <!-- of course we need jQuery -->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- the wescript to be compiled will be stored here -->
+    <script id="wescript" type="text/wescript">
+      *&! hello
+    </script>
+
+    <!-- our compiler -->
+    <script type="text/javascript">
+      //Reader class
+
+      //str is the data to be read
+      function Reader(str) {
+        this.data = str;
+        this.currPos = 0;
+        this.dataLength = str.length;
+      }
+
+      Reader.prototype.nextChar = function() {
+        if (this.currPos >= this.dataLength) {
+          return -1; //end of stream
+        }
+        return this.data[this.currPos++];
+      };
+
+      //n is the number of characters to be retracted
+      Reader.prototype.retract = function(n) {
+        if (n == undefined) {
+          n = 1;
+        }
+        this.currPos -= n;
+        if (this.currPos < 0) {
+          this.currPos = 0;
+        }
+      };
+    </script>
+
+    <!-- our tester -->
+    <script type="text/javascript">
+      function log(str) {
+        $("#log").append(str + "<br />");
+      }
+
+      $(function() {
+        $("#wescriptSrc .content").text($("#wescript").text());
+      });
+
+      $(function() {
+        //we stored our wescript in <script id="wescript">
+        var dataToBeCompiled = $("#wescript").text();
+        var reader = new Reader(dataToBeCompiled);
+        var retracted = false;
+        while (true) {
+          var nextChar = reader.nextChar();
+          if (nextChar == -1) {
+            break;
+          }
+          //if it meets !, it will retract once
+          if (nextChar == "!" && !retracted) {
+            reader.retract();
+            retracted = true;
+          }
+          log("char: " + nextChar);
+        }
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="wescriptSrc">
+      <pre class="content"></pre>
+    </div>
+
+    <div id="log"></div>
+  </body>
+</html>
