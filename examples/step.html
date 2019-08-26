@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Parser - section 5</title>
+    <title>Parser - section 6~9</title>
 
     <style type="text/css">
       #wescriptSrc {
@@ -30,17 +30,8 @@
     <!-- the wescript to be compiled will be stored here -->
     <script id="wescript" type="text/wescript">
       //program start
-      if (true){
-      	print 1;
-
-      	while (true){
-      		print false;
-      		print true;
-      	}
-      }else{
-      	print 2;
-      	print 3;
-      }
+      var c:int = 1;
+      print c * 64 / 5 * (2 - 1);
     </script>
 
     <script type="text/javascript">
@@ -508,6 +499,116 @@
       }
 
       extend(WhileNode, Node);
+
+      function IdentifierNode(identifer) {
+        this.identifer = identifer;
+      }
+
+      extend(IdentifierNode, Node);
+
+      function ParenNode(node) {
+        this.node = node;
+      }
+
+      extend(ParenNode, Node);
+
+      function NegateNode(node) {
+        this.node = node;
+      }
+
+      extend(NegateNode, Node);
+
+      function NotNode(node) {
+        this.node = node;
+      }
+
+      extend(NotNode, Node);
+
+      function CompoundNode() {
+        this.nodes = [];
+      }
+
+      extend(CompoundNode, Node);
+
+      CompoundNode.prototype.push = function(node) {
+        this.nodes.push(node);
+      };
+
+      function OperatorNode() {}
+
+      extend(OperatorNode, Node);
+
+      function OperatorPlusNode() {}
+
+      extend(OperatorPlusNode, OperatorNode);
+
+      function OperatorMinusNode() {}
+
+      extend(OperatorMinusNode, OperatorNode);
+
+      function OperatorMultNode() {}
+
+      extend(OperatorMultNode, OperatorNode);
+
+      function OperatorDivNode() {}
+
+      extend(OperatorDivNode, OperatorNode);
+
+      function OperatorModNode() {}
+
+      extend(OperatorModNode, OperatorNode);
+
+      function OperatorAndNode() {}
+
+      extend(OperatorAndNode, OperatorNode);
+
+      function OperatorOrNode() {}
+
+      extend(OperatorOrNode, OperatorNode);
+
+      function OperatorEqualNode() {}
+
+      extend(OperatorEqualNode, OperatorNode);
+
+      function OperatorNotEqualNode() {}
+
+      extend(OperatorNotEqualNode, OperatorNode);
+
+      function OperatorAssignNode() {}
+
+      extend(OperatorAssignNode, OperatorNode);
+
+      function OperatorPlusAssignNode() {}
+
+      extend(OperatorPlusAssignNode, OperatorNode);
+
+      function OperatorMinusAssignNode() {}
+
+      extend(OperatorMinusAssignNode, OperatorNode);
+
+      function PostIncrementNode(node) {
+        this.node = node;
+      }
+
+      extend(PostIncrementNode, Node);
+
+      function PreIncrementNode(node) {
+        this.node = node;
+      }
+
+      extend(PreIncrementNode, Node);
+
+      function PostDecrementNode(node) {
+        this.node = node;
+      }
+
+      extend(PostDecrementNode, Node);
+
+      function PreDecrementNode(node) {
+        this.node = node;
+      }
+
+      extend(PreDecrementNode, Node);
     </script>
     <script type="text/javascript">
       //Parser class
@@ -634,17 +735,6 @@
             return new PrintNode(expressionNode);
             break;
 
-          case Token.tokens.INTLITERAL_TOKEN:
-            var intToken = this.nextToken();
-            return new IntNode(this.currentToken.text);
-            break;
-
-          //similar to INTLITERAL_TOKEN
-          case Token.tokens.BOOLLITERAL_TOKEN:
-            var boolToken = this.nextToken();
-            return new BoolNode(this.currentToken.text);
-            break;
-
           case Token.tokens.VAR_TOKEN:
             return this.parseVarExpression();
             break;
@@ -657,10 +747,211 @@
             return this.parseWhileExpression();
             break;
 
+          /*
+      case Token.tokens.INTLITERAL_TOKEN:
+          var intToken = this.nextToken();
+          return new IntNode(this.currentToken.text);
+      break;
+
+      //similar to INTLITERAL_TOKEN
+      case Token.tokens.BOOLLITERAL_TOKEN:
+          var boolToken = this.nextToken();
+          return new BoolNode(this.currentToken.text);
+      break;
+      */
+
           default:
             //unexpected, consume it
-            this.nextToken();
+            return this.parseCompoundExpression(0);
         }
+      };
+
+      Parser.prototype.parseOperand = function() {
+        var token = this.nextToken();
+        var operandNode;
+        switch (token) {
+          case Token.tokens.INTLITERAL_TOKEN:
+            operandNode = new IntNode(this.currentToken.text);
+            break;
+          case Token.tokens.BOOLLITERAL_TOKEN:
+            operandNode = new BoolNode(this.currentToken.text);
+            break;
+          case Token.tokens.IDENTIFIER_TOKEN:
+            operandNode = new IdentifierNode(this.currentToken.text);
+            if (this.lookahead() == Token.tokens.MINUSMINUS_TOKEN) {
+              //post decrement
+              this.nextToken();
+              operandNode = new PostDecrementNode(operandNode);
+            } else if (this.lookahead() == Token.tokens.PLUSPLUS_TOKEN) {
+              //post increment
+              this.nextToken();
+              operandNode = new PostIncrementNode(operandNode);
+            }
+            break;
+          case Token.tokens.LEFTPAREN_TOKEN:
+            operandNode = new ParenNode(this.parseCompoundExpression(0));
+
+            //consume the right paren )
+            if (this.lookahead() == Token.tokens.RIGHTPAREN_TOKEN) {
+              this.nextToken();
+            } else {
+              Errors.push({
+                type: Errors.SYNTAX_ERROR,
+                msg: 'Missing right paren ")"',
+                line: this.scanner.currLine
+              });
+            }
+            break;
+          case Token.tokens.MINUSMINUS_TOKEN:
+            if (this.lookahead() == Token.tokens.IDENTIFIER_TOKEN) {
+              this.nextToken();
+              operandNode = new PreDecrementNode(
+                new IdentifierNode(this.currentToken.text)
+              );
+            } else {
+              Errors.push({
+                type: Errors.SYNTAX_ERROR,
+                msg: "Expecting an identifier for pre-decrement expression",
+                line: this.scanner.currLine
+              });
+              return null;
+            }
+            break;
+          case Token.tokens.PLUSPLUS_TOKEN:
+            if (this.lookahead() == Token.tokens.IDENTIFIER_TOKEN) {
+              this.nextToken();
+              operandNode = new PreIncrementNode(
+                new IdentifierNode(this.currentToken.text)
+              );
+            } else {
+              Errors.push({
+                type: Errors.SYNTAX_ERROR,
+                msg: "Expecting an identifier for pre-increment expression",
+                line: this.scanner.currLine
+              });
+              return null;
+            }
+            break;
+          case Token.tokens.MINUS_TOKEN:
+            operandNode = new NegateNode(this.parseOperand());
+            break;
+          case Token.tokens.NOT_TOKEN:
+            operandNode = new NotNode(this.parseOperand());
+            break;
+
+          case Token.tokens.SEMICOLON_TOKEN:
+            return null;
+            break;
+
+          default:
+            //not valid
+            Errors.push({
+              type: Errors.SYNTAX_ERROR,
+              msg: "Unexpected token",
+              line: this.scanner.currLine
+            });
+            return null;
+        }
+        return operandNode;
+      };
+
+      Parser.prototype.getBindingPower = function(token) {
+        switch (token) {
+          case Token.tokens.PLUS_TOKEN:
+          case Token.tokens.MINUS_TOKEN:
+            return 120;
+          case Token.tokens.MULT_TOKEN:
+          case Token.tokens.DIV_TOKEN:
+          case Token.tokens.MOD_TOKEN:
+            return 130;
+          case Token.tokens.EQUAL_TOKEN:
+          case Token.tokens.NOTEQUAL_TOKEN:
+            return 90;
+          case Token.tokens.AND_TOKEN:
+            return 50;
+          case Token.tokens.OR_TOKEN:
+            return 40;
+          case Token.tokens.ASSIGN_TOKEN:
+          case Token.tokens.MINUSASSIGN_TOKEN:
+          case Token.tokens.PLUSASSIGN_TOKEN:
+            return 20;
+        }
+
+        return -1;
+      };
+
+      Parser.prototype.createOperatorNode = function(operatorToken) {
+        switch (operatorToken) {
+          case Token.tokens.PLUS_TOKEN:
+            return new OperatorPlusNode();
+            break;
+          case Token.tokens.MINUS_TOKEN:
+            return new OperatorMinusNode();
+            break;
+          case Token.tokens.MULT_TOKEN:
+            return new OperatorMultNode();
+            break;
+          case Token.tokens.DIV_TOKEN:
+            return new OperatorDivNode();
+            break;
+          case Token.tokens.MOD_TOKEN:
+            return new OperatorModNode();
+            break;
+          case Token.tokens.AND_TOKEN:
+            return new OperatorAndNode();
+            break;
+          case Token.tokens.OR_TOKEN:
+            return new OperatorOrNode();
+            break;
+          case Token.tokens.EQUAL_TOKEN:
+            return new OperatorEqualNode();
+            break;
+          case Token.tokens.NOTEQUAL_TOKEN:
+            return new OperatorNotEqualNode();
+            break;
+          case Token.tokens.ASSIGN_TOKEN:
+            return new OperatorAssignNode();
+            break;
+          case Token.tokens.PLUSASSIGN_TOKEN:
+            return new OperatorPlusAssignNode();
+            break;
+          case Token.tokens.MINUSASSIGN_TOKEN:
+            return new OperatorMinusAssignNode();
+            break;
+        }
+      };
+
+      Parser.prototype.parseCompoundExpression = function(rightBindingPower) {
+        var operandNode = this.parseOperand();
+        if (operandNode == null) {
+          return operandNode;
+        }
+
+        var compoundExpressionNode = new CompoundNode();
+        compoundExpressionNode.push(operandNode);
+
+        var operator = this.lookahead();
+        var leftBindingPower = this.getBindingPower(operator);
+        if (leftBindingPower == -1) {
+          //not an operator
+          return compoundExpressionNode;
+        }
+
+        while (rightBindingPower < leftBindingPower) {
+          operator = this.nextToken();
+          compoundExpressionNode.push(this.createOperatorNode(operator));
+          var node = this.parseCompoundExpression(leftBindingPower);
+          compoundExpressionNode.push(node);
+
+          var oper = this.lookahead();
+          leftBindingPower = this.getBindingPower(oper);
+          if (leftBindingPower == -1) {
+            //not an operator
+            return compoundExpressionNode;
+          }
+        }
+
+        return compoundExpressionNode;
       };
 
       Parser.prototype.parseWhileExpression = function() {
