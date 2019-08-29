@@ -7,3 +7,5 @@ build:
 	docker run --rm -v ${PWD}:/gitbook jaceju/gitbook install docs
 	docker run --rm -v ${PWD}:/gitbook jaceju/gitbook build docs ./build
 	cp -R build/* public/
+	rm -rf build
+	cd public/ && git add . && git commit -m "Update" && git push && cd ../
